@@ -4,12 +4,12 @@ export default defineConfig({
   testDir: './e2e',
   fullyParallel: true,
   use: {
-    baseURL: 'http://127.0.0.1:5173',
+    baseURL: 'http://localhost:5174',
     trace: 'on-first-retry',
   },
   webServer: {
-    command: 'pnpm dev',
-    url: 'http://127.0.0.1:5173',
+    command: 'corepack pnpm dev',
+    url: 'http://localhost:5174',
     reuseExistingServer: true,
   },
   projects: [
