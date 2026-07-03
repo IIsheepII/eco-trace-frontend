@@ -38,7 +38,8 @@ function mapExtractedField(field: BackendExtractedField): ExtractedField {
 
 export function mapDocument(document: BackendDocument): DocumentRecord {
   const validatedByDefinition = new Map(document.validatedFields?.map((field) => [field.fieldDefinitionId, field]) ?? []);
-  const extractedFields = document.extractedFields ?? [];
+  const extractedFields = [...(document.extractedFields ?? [])].sort((a, b) => a.fieldDefinition.order - b.fieldDefinition.order);
+  const validatedFields = [...(document.validatedFields ?? [])].sort((a, b) => a.fieldDefinition.order - b.fieldDefinition.order);
   const fields = extractedFields.length
     ? extractedFields.map((field) => {
         const validated = validatedByDefinition.get(field.fieldDefinitionId);
@@ -48,7 +49,7 @@ export function mapDocument(document: BackendDocument): DocumentRecord {
           status: validated?.status ?? 'PENDING',
         };
       })
-    : (document.validatedFields ?? []).map((field) => ({
+    : validatedFields.map((field) => ({
         id: field.id,
         fieldDefinitionId: field.fieldDefinitionId,
         label: field.fieldDefinition.label,

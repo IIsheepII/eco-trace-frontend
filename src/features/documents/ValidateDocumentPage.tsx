@@ -1,5 +1,5 @@
 import { zodResolver } from '@hookform/resolvers/zod';
-import { Alert, Box, Button, Card, CardContent, Grid, LinearProgress, Stack, Step, StepLabel, Stepper, TextField, Typography } from '@mui/material';
+import { Alert, Box, Button, Grid, Stack, Step, StepLabel, Stepper, TextField, Typography } from '@mui/material';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { useFieldArray, useForm } from 'react-hook-form';
 import { useNavigate, useParams } from 'react-router-dom';
@@ -8,6 +8,53 @@ import { fieldValidationSchema, type FieldValidationFormValues } from '../../sch
 import { documentService } from '../../services/documentService';
 import { EmptyState, ErrorState, LoadingState } from '../../components/StateView';
 import { DocumentPreview } from './DocumentPreview';
+
+const manifestSections = [
+  {
+    title: 'Manifiesto',
+    keys: ['manifest_year', 'manifest_month'],
+  },
+  {
+    title: 'Datos Generales del Generador',
+    keys: ['generator_razon_social', 'generator_ruc', 'plant_denominacion'],
+  },
+  {
+    title: 'Datos del residuo peligroso manejado',
+    keys: ['waste_total_kg', 'basel_a4'],
+  },
+  {
+    title: 'Manejo del residuo peligroso',
+    keys: [
+      'transporter_razon_social',
+      'transporter_ruc',
+      'transporter_registro_eo_rs',
+      'transporter_responsable_tecnico',
+      'transporter_colegiatura',
+      'driver_name',
+      'vehicle_plate',
+      'waste_reception_date',
+      'received_quantity_t',
+    ],
+  },
+  {
+    title: 'EO-RS del destino final',
+    keys: [
+      'destination_razon_social_siglas',
+      'destination_ruc',
+      'destination_codigo_registro_eo_rs',
+      'destination_address',
+      'destination_responsable_tecnico',
+      'destination_responsable_name',
+      'destination_responsable_dni_ce',
+      'destination_fecha_hora',
+    ],
+  },
+];
+
+type RenderSection = {
+  title: string;
+  indexes: number[];
+};
 
 export function ValidateDocumentPage() {
   const { id = '' } = useParams();
@@ -39,6 +86,54 @@ export function ValidateDocumentPage() {
   if (documentQuery.isError || !documentQuery.data) return <ErrorState message="Unable to load validation workspace" onRetry={() => documentQuery.refetch()} />;
 
   const doc = documentQuery.data;
+  const fieldIndexesByKey = new Map(doc.fields?.map((field, index) => [field.key, index]) ?? []);
+  const groupedFields = manifestSections
+    .map((section) => ({
+      ...section,
+      indexes: section.keys.map((key) => fieldIndexesByKey.get(key)).filter((index): index is number => index !== undefined),
+    }))
+    .filter((section) => section.indexes.length > 0);
+  const groupedIndexes = new Set(groupedFields.flatMap((section) => section.indexes));
+  const ungroupedIndexes = fields.map((_, index) => index).filter((index) => !groupedIndexes.has(index));
+  const sections: RenderSection[] = groupedFields.length > 0 ? groupedFields : [{ title: 'Extracted fields', indexes: fields.map((_, index) => index) }];
+  if (groupedFields.length > 0 && ungroupedIndexes.length > 0) {
+    sections.push({ title: 'Otros campos', indexes: ungroupedIndexes });
+  }
+
+  const renderField = (index: number) => {
+    const field = fields[index];
+    const original = doc.fields?.[index];
+    return (
+      <Box
+        key={field.id}
+        sx={{
+          display: 'grid',
+          gridTemplateColumns: { xs: '1fr', md: 'minmax(180px, 0.8fr) minmax(180px, 1fr) minmax(220px, 1.1fr) auto' },
+          gap: 1.5,
+          alignItems: 'center',
+          py: 1.5,
+          borderBottom: 1,
+          borderColor: 'divider',
+        }}
+      >
+        <Typography variant="body2" fontWeight={700}>
+          {original?.label}
+        </Typography>
+        <Typography variant="body2" color={original?.aiValue ? 'text.primary' : 'text.secondary'} sx={{ overflowWrap: 'anywhere' }}>
+          {original?.aiValue ?? 'Sin valor detectado'}
+        </Typography>
+        <TextField
+          label="Valor validado"
+          {...form.register(`fields.${index}.finalValue`)}
+          error={Boolean(form.formState.errors.fields?.[index]?.finalValue)}
+          helperText={form.formState.errors.fields?.[index]?.finalValue?.message}
+          size="small"
+          fullWidth
+        />
+        {original && <StatusChip status={original.status} />}
+      </Box>
+    );
+  };
 
   return (
     <Box>
@@ -69,36 +164,16 @@ export function ValidateDocumentPage() {
               {fields.length === 0 && (
                 <EmptyState title="No extracted fields" body="Run OCR and AI extraction before validating this document." />
               )}
-              {fields.map((field, index) => {
-                const original = doc.fields?.[index];
-                return (
-                  <Card key={field.id}>
-                    <CardContent>
-                      <Stack gap={1.5}>
-                        <Stack direction={{ xs: 'column', sm: 'row' }} justifyContent="space-between" gap={1.5}>
-                          <Box sx={{ minWidth: 0 }}>
-                            <Typography variant="caption" color="text.secondary">
-                              {original?.label}
-                            </Typography>
-                            <Typography variant="body2" color="text.secondary" sx={{ overflowWrap: 'anywhere' }}>
-                              AI extracted: {original?.aiValue ?? 'No value detected'}
-                            </Typography>
-                          </Box>
-                          {original && <StatusChip status={original.status} />}
-                        </Stack>
-                        <LinearProgress variant="determinate" value={original?.confidence ?? 0} sx={{ borderRadius: 999 }} />
-                        <TextField
-                          label="Validated value"
-                          {...form.register(`fields.${index}.finalValue`)}
-                          error={Boolean(form.formState.errors.fields?.[index]?.finalValue)}
-                          helperText={form.formState.errors.fields?.[index]?.finalValue?.message}
-                          fullWidth
-                        />
-                      </Stack>
-                    </CardContent>
-                  </Card>
-                );
-              })}
+              {sections.map((section) => (
+                <Box key={section.title}>
+                  <Typography variant="h6" sx={{ mb: 1.25 }}>
+                    {section.title}
+                  </Typography>
+                  <Box sx={{ bgcolor: 'background.paper', border: 1, borderColor: 'divider', borderRadius: 1, px: 2 }}>
+                    {section.indexes.map(renderField)}
+                  </Box>
+                </Box>
+              ))}
               <TextField label="Validation notes" {...form.register('notes')} multiline minRows={3} />
             </Stack>
           </Grid>
