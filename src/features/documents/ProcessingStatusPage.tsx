@@ -163,9 +163,15 @@ export function ProcessingStatusPage() {
             <Button component={RouterLink} to={`/documents/${id}`} variant="outlined">
               View detail
             </Button>
-            <Button component={RouterLink} to={`/documents/${id}/validate`} variant="contained" disabled={!canValidate}>
-              Validate fields
-            </Button>
+            {canValidate ? (
+              <Button component={RouterLink} to={`/documents/${id}/validate`} variant="contained">
+                Validate fields
+              </Button>
+            ) : (
+              <Button variant="contained" disabled>
+                Validate fields
+              </Button>
+            )}
           </Stack>
         </CardContent>
       </Card>

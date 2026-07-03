@@ -95,6 +95,12 @@ async function routeAuthenticatedApi(page: import('@playwright/test').Page) {
   await page.route('**/api/v1/documents/doc-1', async (route) => {
     await route.fulfill({ json: backendDocument });
   });
+  await page.route('**/api/v1/documents/doc-1/file', async (route) => {
+    await route.fulfill({
+      body: Buffer.from('%PDF-1.4 test manifest'),
+      headers: { 'Content-Type': 'application/pdf' },
+    });
+  });
   await page.route('**/api/v1/documents?**', async (route) => {
     await route.fulfill({ json: [backendDocument] });
   });
@@ -155,6 +161,59 @@ async function routeAuthenticatedApi(page: import('@playwright/test').Page) {
   });
 }
 
+async function routeProcessingFailureApi(page: import('@playwright/test').Page) {
+  await routeAuthenticatedApi(page);
+  await page.route('**/api/v1/documents/doc-1', async (route) => {
+    await route.fulfill({ json: { ...backendDocument, status: 'OCR_FAILED', extractedFields: [] } });
+  });
+  await page.route('**/api/v1/documents/doc-1/ocr-result', async (route) => {
+    await route.fulfill({
+      json: {
+        ...ocrResult,
+        rawText: '',
+        characterCount: 0,
+        status: 'FAILED',
+        errorMessage: 'OCR processing failed. Verify that Tesseract and Poppler are installed and that the file can be processed.',
+      },
+    });
+  });
+  await page.route('**/api/v1/documents/doc-1/processing-status', async (route) => {
+    await route.fulfill({
+      json: {
+        documentId: 'doc-1',
+        documentStatus: 'OCR_FAILED',
+        latestJob: {
+          id: 'ocr-job',
+          documentId: 'doc-1',
+          type: 'OCR',
+          status: 'FAILED',
+          errorMessage: 'OCR processing failed. Verify that Tesseract and Poppler are installed and that the file can be processed.',
+          output: {},
+          createdAt: '2026-06-09T10:00:10Z',
+        },
+        ocrJob: {
+          id: 'ocr-job',
+          documentId: 'doc-1',
+          type: 'OCR',
+          status: 'FAILED',
+          errorMessage: 'OCR processing failed. Verify that Tesseract and Poppler are installed and that the file can be processed.',
+          output: {},
+          createdAt: '2026-06-09T10:00:10Z',
+        },
+        aiExtractionJob: null,
+        ocrResult: {
+          id: ocrResult.id,
+          status: 'FAILED',
+          language: ocrResult.language,
+          characterCount: 0,
+          processingTimeMs: ocrResult.processingTimeMs,
+          errorMessage: 'OCR processing failed. Verify that Tesseract and Poppler are installed and that the file can be processed.',
+        },
+      },
+    });
+  });
+}
+
 test('user logs in with an HttpOnly-cookie backend session contract', async ({ page }) => {
   await page.route('**/api/v1/auth/refresh', async (route) => {
     await route.fulfill({ status: 401, json: { success: false, error: { message: 'Missing refresh token' } } });
@@ -197,7 +256,9 @@ test('upload, processing, validation, search, reports and dashboard integrate wi
     buffer: Buffer.from('%PDF-1.4 test manifest'),
   });
   await page.getByRole('button', { name: /start ai extraction/i }).click();
-  await expect(page.getByRole('heading', { name: 'AI Extraction in Progress' })).toBeVisible();
+  await expect(page.getByRole('heading', { name: 'Extraction Complete' })).toBeVisible();
+  await expect(page.getByText('OCR characters')).toBeVisible();
+  await expect(page.getByText('Invoice Number: EPA-123')).toBeVisible();
 
   await page.goto('/documents/doc-1/validate');
   await expect(page.getByRole('heading', { name: 'Validate Manifest' })).toBeVisible();
@@ -216,4 +277,14 @@ test('upload, processing, validation, search, reports and dashboard integrate wi
 
   await page.goto('/');
   await expect(page.getByText('96%')).toBeVisible();
+});
+
+test('processing status surfaces OCR failures and blocks validation', async ({ page }) => {
+  await routeProcessingFailureApi(page);
+
+  await page.goto('/documents/doc-1/processing');
+
+  await expect(page.getByRole('heading', { name: 'Extraction Needs Attention' })).toBeVisible();
+  await expect(page.getByText(/OCR processing failed/i)).toBeVisible();
+  await expect(page.getByRole('button', { name: /validate fields/i })).toBeDisabled();
 });

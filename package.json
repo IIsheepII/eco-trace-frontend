@@ -10,6 +10,7 @@
     "test": "vitest run",
     "test:watch": "vitest",
     "test:e2e": "playwright test",
+    "test:e2e:existing": "set PLAYWRIGHT_USE_EXISTING_SERVER=true&& playwright test",
     "lint": "eslint ."
   },
   "dependencies": {
