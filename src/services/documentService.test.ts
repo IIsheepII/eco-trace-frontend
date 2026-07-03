@@ -52,21 +52,22 @@ const backendDocument = {
 };
 
 describe('documentService', () => {
-  it('uploads one multipart file to the backend upload contract and maps the file preview URL', async () => {
+  it('uploads one multipart file to the backend upload contract and maps the preview URL', async () => {
     const request = vi.spyOn(httpClient, 'request').mockResolvedValue({ data: backendDocument });
     const formData = new FormData();
     formData.set('title', 'Invoice.pdf');
     formData.set('documentTypeId', 'dt-1');
 
-    await expect(documentService.upload(formData)).resolves.toMatchObject({ id: 'doc-1', name: 'Invoice.pdf', fileUrl: expect.stringContaining('/documents/doc-1/file') });
+    const uploaded = await documentService.upload(formData);
+    expect(uploaded).toMatchObject({ id: 'doc-1', name: 'Invoice.pdf', fileUrl: expect.stringContaining('/documents/doc-1/file') });
     expect(request).toHaveBeenCalledWith(expect.objectContaining({ url: '/documents/upload', method: 'POST', data: formData }));
   });
 
-  it('passes status filters to the backend search contract', async () => {
+  it('passes only backend-supported search filters', async () => {
     const request = vi.spyOn(httpClient, 'request').mockResolvedValue({ data: [backendDocument] });
 
-    await documentService.list({ status: 'VALIDATION_PENDING' });
-    expect(request).toHaveBeenCalledWith(expect.objectContaining({ url: '/documents?status=VALIDATION_PENDING' }));
+    await documentService.list({ q: 'Invoice', fieldName: 'invoice_number' });
+    expect(request).toHaveBeenCalledWith(expect.objectContaining({ url: '/documents?q=Invoice&fieldName=invoice_number' }));
   });
 
   it('saves validated fields through the validation module route', async () => {

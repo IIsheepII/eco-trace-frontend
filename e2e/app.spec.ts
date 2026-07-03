@@ -70,9 +70,6 @@ const backendDocument = {
 };
 
 async function routeAuthenticatedApi(page: import('@playwright/test').Page) {
-  await page.route('**/api/v1/auth/me', async (route) => {
-    await route.fulfill({ json: { user } });
-  });
   await page.route('**/api/v1/auth/refresh', async (route) => {
     await route.fulfill({ json: { user } });
   });
@@ -116,9 +113,6 @@ async function routeAuthenticatedApi(page: import('@playwright/test').Page) {
 }
 
 test('user logs in with an HttpOnly-cookie backend session contract', async ({ page }) => {
-  await page.route('**/api/v1/auth/me', async (route) => {
-    await route.fulfill({ status: 401, json: { success: false, error: { message: 'Missing access token' } } });
-  });
   await page.route('**/api/v1/auth/refresh', async (route) => {
     await route.fulfill({ status: 401, json: { success: false, error: { message: 'Missing refresh token' } } });
   });

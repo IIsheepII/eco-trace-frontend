@@ -1,6 +1,6 @@
 import type { LoginFormValues } from '../schemas/auth';
 import type { User } from '../types/domain';
-import { ApiError, apiRequest } from './apiClient';
+import { apiRequest } from './apiClient';
 
 type AuthResponse = {
   user: {
@@ -26,14 +26,5 @@ export const authService = {
       body: JSON.stringify(payload),
     }).then(mapAuthUser),
   logout: () => apiRequest<void>('/auth/logout', { method: 'POST' }),
-  me: async () => {
-    try {
-      return await apiRequest<AuthResponse>('/auth/me').then(mapAuthUser);
-    } catch (error) {
-      if (error instanceof ApiError && error.status === 401) {
-        return apiRequest<AuthResponse>('/auth/refresh', { method: 'POST' }).then(mapAuthUser);
-      }
-      throw error;
-    }
-  },
+  me: () => apiRequest<AuthResponse>('/auth/refresh', { method: 'POST' }).then(mapAuthUser),
 };

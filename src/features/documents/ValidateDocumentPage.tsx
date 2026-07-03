@@ -26,7 +26,7 @@ export function ValidateDocumentPage() {
     values: {
       fields: (documentQuery.data?.fields ?? []).map((field) => ({
         fieldDefinitionId: field.fieldDefinitionId,
-        extractedFieldId: field.id,
+        extractedFieldId: field.extractedFieldId,
         finalValue: field.humanValue ?? field.aiValue ?? '',
       })),
       notes: '',

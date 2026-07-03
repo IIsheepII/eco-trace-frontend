@@ -27,10 +27,10 @@ describe('authService', () => {
     expect(request).toHaveBeenCalledWith(expect.objectContaining({ url: '/auth/login', method: 'POST' }));
   });
 
-  it('loads the current user through the backend profile endpoint', async () => {
+  it('loads the current user through the backend refresh endpoint', async () => {
     const request = vi.spyOn(httpClient, 'request').mockResolvedValue(authResponse);
 
     await authService.me();
-    expect(request).toHaveBeenCalledWith(expect.objectContaining({ url: '/auth/me' }));
+    expect(request).toHaveBeenCalledWith(expect.objectContaining({ url: '/auth/refresh', method: 'POST' }));
   });
 });

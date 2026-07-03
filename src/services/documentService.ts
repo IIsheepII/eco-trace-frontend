@@ -3,15 +3,15 @@ import type {
   BackendExtractedField,
   DocumentRecord,
   ExtractedField,
+  OcrResult,
+  ProcessingStatus,
   ProcessingJob,
-  BackendDocumentStatus,
 } from '../types/domain';
 import type { FieldValidationFormValues } from '../schemas/documents';
 import { API_BASE_URL, apiRequest } from './apiClient';
 
 export type DocumentFilters = {
   q?: string;
-  status?: BackendDocumentStatus;
   documentTypeId?: string;
   fieldName?: string;
   fieldValue?: string;
@@ -25,6 +25,7 @@ function toNumber(value: string | number | undefined): number {
 function mapExtractedField(field: BackendExtractedField): ExtractedField {
   return {
     id: field.id,
+    extractedFieldId: field.id,
     fieldDefinitionId: field.fieldDefinitionId,
     label: field.fieldDefinition.label,
     key: field.fieldDefinition.name,
@@ -95,9 +96,15 @@ export const documentService = {
       formData,
     }).then(mapDocument),
   runOcr: (documentId: string) =>
-    apiRequest<ProcessingJob>(`/ocr/documents/${documentId}/run`, {
+    apiRequest<{ job: ProcessingJob; ocrResult: OcrResult }>(`/ocr/documents/${documentId}/run`, {
       method: 'POST',
     }),
+  processOcr: (documentId: string) =>
+    apiRequest<{ job: ProcessingJob; ocrResult: OcrResult }>(`/documents/${documentId}/ocr/process`, {
+      method: 'POST',
+    }),
+  getOcrResult: (documentId: string) => apiRequest<OcrResult>(`/documents/${documentId}/ocr-result`),
+  getProcessingStatus: (documentId: string) => apiRequest<ProcessingStatus>(`/documents/${documentId}/processing-status`),
   runAiExtraction: (documentId: string) =>
     apiRequest<{ job: ProcessingJob; extracted: BackendExtractedField[] }>(`/ai-extraction/documents/${documentId}/run`, {
       method: 'POST',

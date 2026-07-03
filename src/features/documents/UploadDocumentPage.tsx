@@ -1,7 +1,7 @@
 import { zodResolver } from '@hookform/resolvers/zod';
 import { CloudUpload } from '@mui/icons-material';
 import { Alert, Box, Button, Card, CardContent, MenuItem, Stack, Step, StepLabel, Stepper, TextField, Typography } from '@mui/material';
-import { useMutation, useQuery } from '@tanstack/react-query';
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { useForm } from 'react-hook-form';
 import { useNavigate } from 'react-router-dom';
 import { uploadDocumentSchema, type UploadDocumentFormValues } from '../../schemas/documents';
@@ -11,6 +11,7 @@ import { ErrorState, LoadingState } from '../../components/StateView';
 
 export function UploadDocumentPage() {
   const navigate = useNavigate();
+  const queryClient = useQueryClient();
   const {
     register,
     handleSubmit,
@@ -29,6 +30,9 @@ export function UploadDocumentPage() {
     const uploaded = await uploadMutation.mutateAsync(formData);
     await documentService.runOcr(uploaded.id);
     await documentService.runAiExtraction(uploaded.id);
+    const processed = await documentService.get(uploaded.id);
+    queryClient.setQueryData(['documents', uploaded.id], processed);
+    queryClient.invalidateQueries({ queryKey: ['documents'] });
     navigate(`/documents/${uploaded.id}/processing`);
   });
 

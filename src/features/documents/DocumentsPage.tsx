@@ -8,14 +8,15 @@ import { EmptyState, ErrorState, LoadingState } from '../../components/StateView
 import { StatusChip } from '../../components/StatusChip';
 import { useAuth } from '../auth/AuthProvider';
 import { documentService, type DocumentFilters } from '../../services/documentService';
-import type { DocumentRecord } from '../../types/domain';
+import type { BackendDocumentStatus, DocumentRecord } from '../../types/domain';
 
 export function DocumentsPage() {
   const [filters, setFilters] = useState<DocumentFilters>({});
+  const [statusFilter, setStatusFilter] = useState<BackendDocumentStatus | ''>('');
   const { user } = useAuth();
   const canUpload = Boolean(user?.permissions.includes('documents:manage'));
   const documentsQuery = useQuery({ queryKey: ['documents', filters], queryFn: () => documentService.list(filters) });
-  const rows = documentsQuery.data ?? [];
+  const rows = (documentsQuery.data ?? []).filter((document) => !statusFilter || document.status === statusFilter);
 
   return (
     <Box sx={{ p: { xs: 2, md: 4 } }}>
@@ -36,7 +37,7 @@ export function DocumentsPage() {
           InputProps={{ startAdornment: <Search fontSize="small" /> }}
           onChange={(event) => setFilters((current) => ({ ...current, q: event.target.value }))}
         />
-        <TextField select label="Status" defaultValue="" sx={{ minWidth: 220 }} onChange={(event) => setFilters((current) => ({ ...current, status: event.target.value as DocumentFilters['status'] }))}>
+        <TextField select label="Status" defaultValue="" sx={{ minWidth: 220 }} onChange={(event) => setStatusFilter(event.target.value as BackendDocumentStatus | '')}>
           <MenuItem value="">All statuses</MenuItem>
           <MenuItem value="OCR_PENDING">OCR pending</MenuItem>
           <MenuItem value="EXTRACTION_PENDING">Extraction pending</MenuItem>

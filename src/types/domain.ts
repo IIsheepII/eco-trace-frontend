@@ -13,6 +13,7 @@ export type BackendDocumentStatus =
   | 'UPLOADED'
   | 'OCR_PENDING'
   | 'OCR_COMPLETED'
+  | 'OCR_FAILED'
   | 'EXTRACTION_PENDING'
   | 'EXTRACTION_COMPLETED'
   | 'VALIDATION_PENDING'
@@ -28,6 +29,7 @@ export type ValidationStatus = 'PENDING' | 'APPROVED' | 'CORRECTED' | 'REJECTED'
 export type ExtractedField = {
   id: string;
   fieldDefinitionId: string;
+  extractedFieldId?: string;
   label: string;
   key: string;
   aiValue: string | null;
@@ -139,6 +141,29 @@ export type ProcessingJob = {
   errorMessage?: string | null;
   output: Record<string, unknown>;
   createdAt: string;
+};
+
+export type OcrResult = {
+  id: string;
+  documentId: string;
+  processingJobId: string;
+  rawText: string;
+  language: string;
+  confidence?: string | number | null;
+  characterCount: number;
+  processingTimeMs: number;
+  status: ProcessingJobStatus;
+  errorMessage?: string | null;
+  metadata: Record<string, unknown>;
+  createdAt: string;
+  updatedAt: string;
+};
+
+export type ProcessingStatus = {
+  documentId: string;
+  documentStatus: BackendDocumentStatus;
+  processingJob: ProcessingJob | null;
+  ocrResult: Pick<OcrResult, 'id' | 'status' | 'language' | 'characterCount' | 'processingTimeMs' | 'errorMessage'> | null;
 };
 
 export type BackendExtractedField = {
