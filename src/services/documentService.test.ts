@@ -80,12 +80,12 @@ describe('documentService', () => {
   });
 
   it('runs OCR and AI extraction through their real processing endpoints', async () => {
-    const request = vi.spyOn(httpClient, 'request').mockResolvedValue({ data: { id: 'job-1' } });
+    const request = vi.spyOn(httpClient, 'request').mockResolvedValue({ data: { job: { id: 'job-1' }, ocrResult: { id: 'ocr-1' } } });
 
-    await documentService.runOcr('doc-1');
+    await documentService.processOcr('doc-1');
     await documentService.runAiExtraction('doc-1');
 
-    expect(request).toHaveBeenCalledWith(expect.objectContaining({ url: '/ocr/documents/doc-1/run', method: 'POST' }));
+    expect(request).toHaveBeenCalledWith(expect.objectContaining({ url: '/documents/doc-1/ocr/process', method: 'POST' }));
     expect(request).toHaveBeenCalledWith(expect.objectContaining({ url: '/ai-extraction/documents/doc-1/run', method: 'POST' }));
   });
 });

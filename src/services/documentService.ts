@@ -9,6 +9,7 @@ import type {
 } from '../types/domain';
 import type { FieldValidationFormValues } from '../schemas/documents';
 import { API_BASE_URL, apiRequest } from './apiClient';
+import { httpClient } from './apiClient';
 
 export type DocumentFilters = {
   q?: string;
@@ -95,14 +96,14 @@ export const documentService = {
       method: 'POST',
       formData,
     }).then(mapDocument),
-  runOcr: (documentId: string) =>
-    apiRequest<{ job: ProcessingJob; ocrResult: OcrResult }>(`/ocr/documents/${documentId}/run`, {
-      method: 'POST',
-    }),
   processOcr: (documentId: string) =>
     apiRequest<{ job: ProcessingJob; ocrResult: OcrResult }>(`/documents/${documentId}/ocr/process`, {
       method: 'POST',
     }),
+  getFileBlob: async (documentId: string) => {
+    const response = await httpClient.get<Blob>(`/documents/${documentId}/file`, { responseType: 'blob' });
+    return response.data;
+  },
   getOcrResult: (documentId: string) => apiRequest<OcrResult>(`/documents/${documentId}/ocr-result`),
   getProcessingStatus: (documentId: string) => apiRequest<ProcessingStatus>(`/documents/${documentId}/processing-status`),
   runAiExtraction: (documentId: string) =>

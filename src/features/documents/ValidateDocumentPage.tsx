@@ -1,12 +1,12 @@
 import { zodResolver } from '@hookform/resolvers/zod';
-import { Box, Button, Card, CardContent, Grid, LinearProgress, Stack, Step, StepLabel, Stepper, TextField, Typography } from '@mui/material';
+import { Alert, Box, Button, Card, CardContent, Grid, LinearProgress, Stack, Step, StepLabel, Stepper, TextField, Typography } from '@mui/material';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { useFieldArray, useForm } from 'react-hook-form';
 import { useNavigate, useParams } from 'react-router-dom';
 import { StatusChip } from '../../components/StatusChip';
 import { fieldValidationSchema, type FieldValidationFormValues } from '../../schemas/documents';
 import { documentService } from '../../services/documentService';
-import { ErrorState, LoadingState } from '../../components/StateView';
+import { EmptyState, ErrorState, LoadingState } from '../../components/StateView';
 import { DocumentPreview } from './DocumentPreview';
 
 export function ValidateDocumentPage() {
@@ -18,6 +18,7 @@ export function ValidateDocumentPage() {
     mutationFn: (values: FieldValidationFormValues) => documentService.validate(id, values),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['documents', id] });
+      queryClient.invalidateQueries({ queryKey: ['metrics'] });
       navigate(`/documents/${id}`);
     },
   });
@@ -41,7 +42,7 @@ export function ValidateDocumentPage() {
 
   return (
     <Box>
-      <Stepper activeStep={2} sx={{ bgcolor: 'background.paper', borderBottom: 1, borderColor: 'divider', p: 3 }}>
+      <Stepper activeStep={2} alternativeLabel sx={{ bgcolor: 'background.paper', borderBottom: 1, borderColor: 'divider', p: { xs: 2, md: 3 }, overflowX: 'auto' }}>
         {['Upload', 'Extract', 'Validate', 'Complete'].map((label) => (
           <Step key={label}>
             <StepLabel>{label}</StepLabel>
@@ -51,7 +52,7 @@ export function ValidateDocumentPage() {
       <Box component="form" onSubmit={form.handleSubmit((values) => validationMutation.mutate(values))} sx={{ p: { xs: 2, md: 3 } }}>
         <Grid container spacing={3}>
           <Grid size={{ xs: 12, lg: 6 }}>
-            <DocumentPreview name={doc.name} fileUrl={doc.fileUrl} />
+            <DocumentPreview name={doc.name} fileUrl={doc.fileUrl} documentId={doc.id} />
           </Grid>
           <Grid size={{ xs: 12, lg: 6 }}>
             <Stack direction={{ xs: 'column', sm: 'row' }} justifyContent="space-between" gap={2} sx={{ mb: 2 }}>
@@ -60,29 +61,39 @@ export function ValidateDocumentPage() {
                 <Typography color="text.secondary">Compare AI values with human-corrected fields before saving.</Typography>
               </Box>
               <Button type="submit" variant="contained" disabled={validationMutation.isPending}>
-                Save validated data
+                {validationMutation.isPending ? 'Saving validation' : 'Save validated data'}
               </Button>
             </Stack>
+            {validationMutation.isError && <Alert severity="error" sx={{ mb: 2 }}>Unable to save validated data. Review the fields and try again.</Alert>}
             <Stack gap={2}>
+              {fields.length === 0 && (
+                <EmptyState title="No extracted fields" body="Run OCR and AI extraction before validating this document." />
+              )}
               {fields.map((field, index) => {
                 const original = doc.fields?.[index];
                 return (
                   <Card key={field.id}>
                     <CardContent>
                       <Stack gap={1.5}>
-                      <Stack direction="row" justifyContent="space-between" gap={2}>
-                        <Box>
+                        <Stack direction={{ xs: 'column', sm: 'row' }} justifyContent="space-between" gap={1.5}>
+                          <Box sx={{ minWidth: 0 }}>
                             <Typography variant="caption" color="text.secondary">
                               {original?.label}
-                          </Typography>
-                          <Typography variant="body2" color="text.secondary">
-                            AI extracted: {original?.aiValue}
-                          </Typography>
-                        </Box>
+                            </Typography>
+                            <Typography variant="body2" color="text.secondary" sx={{ overflowWrap: 'anywhere' }}>
+                              AI extracted: {original?.aiValue ?? 'No value detected'}
+                            </Typography>
+                          </Box>
                           {original && <StatusChip status={original.status} />}
                         </Stack>
                         <LinearProgress variant="determinate" value={original?.confidence ?? 0} sx={{ borderRadius: 999 }} />
-                        <TextField label="Validated value" {...form.register(`fields.${index}.finalValue`)} fullWidth />
+                        <TextField
+                          label="Validated value"
+                          {...form.register(`fields.${index}.finalValue`)}
+                          error={Boolean(form.formState.errors.fields?.[index]?.finalValue)}
+                          helperText={form.formState.errors.fields?.[index]?.finalValue?.message}
+                          fullWidth
+                        />
                       </Stack>
                     </CardContent>
                   </Card>

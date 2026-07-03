@@ -162,7 +162,10 @@ export type OcrResult = {
 export type ProcessingStatus = {
   documentId: string;
   documentStatus: BackendDocumentStatus;
-  processingJob: ProcessingJob | null;
+  latestJob: ProcessingJob | null;
+  ocrJob: ProcessingJob | null;
+  aiExtractionJob: ProcessingJob | null;
+  processingJob?: ProcessingJob | null;
   ocrResult: Pick<OcrResult, 'id' | 'status' | 'language' | 'characterCount' | 'processingTimeMs' | 'errorMessage'> | null;
 };
 

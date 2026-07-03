@@ -31,7 +31,7 @@ export function DocumentDetailPage() {
       </Stack>
       <Grid container spacing={3}>
         <Grid size={{ xs: 12, lg: 7 }}>
-          <DocumentPreview name={doc.name} fileUrl={doc.fileUrl} />
+          <DocumentPreview name={doc.name} fileUrl={doc.fileUrl} documentId={doc.id} />
         </Grid>
         <Grid size={{ xs: 12, lg: 5 }}>
           <Stack gap={2}>

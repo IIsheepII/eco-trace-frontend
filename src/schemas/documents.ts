@@ -1,5 +1,7 @@
 import { z } from 'zod';
 
+const MAX_UPLOAD_SIZE_BYTES = 20 * 1024 * 1024;
+
 export const uploadDocumentSchema = z.object({
   title: z.string().min(1, 'Enter a document title'),
   documentTypeId: z.string().min(1, 'Choose a document type'),
@@ -12,6 +14,10 @@ export const uploadDocumentSchema = z.object({
           ['application/pdf', 'image/jpeg', 'image/png', 'image/tiff', 'image/webp'].includes(file.type),
         ),
       'Only PDF, JPG, PNG, TIFF or WEBP files are supported',
+    )
+    .refine(
+      (files) => Array.from(files ?? []).every((file) => file.size <= MAX_UPLOAD_SIZE_BYTES),
+      'Files must be 20 MB or smaller',
     ),
 });
 

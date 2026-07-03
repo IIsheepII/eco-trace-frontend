@@ -69,6 +69,22 @@ const backendDocument = {
   ],
 };
 
+const ocrResult = {
+  id: 'ocr-result-1',
+  documentId: 'doc-1',
+  processingJobId: 'ocr-job',
+  rawText: 'Invoice Number: EPA-123\nIssue Date: 2026-06-09\nTotal Amount: 120.00',
+  language: 'spa+eng',
+  confidence: null,
+  characterCount: 70,
+  processingTimeMs: 1200,
+  status: 'COMPLETED',
+  errorMessage: null,
+  metadata: { engine: 'tesseract-cli' },
+  createdAt: '2026-06-09T10:00:10Z',
+  updatedAt: '2026-06-09T10:00:10Z',
+};
+
 async function routeAuthenticatedApi(page: import('@playwright/test').Page) {
   await page.route('**/api/v1/auth/refresh', async (route) => {
     await route.fulfill({ json: { user } });
@@ -88,8 +104,35 @@ async function routeAuthenticatedApi(page: import('@playwright/test').Page) {
   await page.route('**/api/v1/documents/upload', async (route) => {
     await route.fulfill({ json: { ...backendDocument, status: 'OCR_PENDING', extractedFields: [] } });
   });
-  await page.route('**/api/v1/ocr/documents/doc-1/run', async (route) => {
-    await route.fulfill({ json: { id: 'ocr-job', documentId: 'doc-1', type: 'OCR', status: 'COMPLETED', output: {}, createdAt: '2026-06-09T10:00:10Z' } });
+  await page.route('**/api/v1/documents/doc-1/ocr/process', async (route) => {
+    await route.fulfill({
+      json: {
+        job: { id: 'ocr-job', documentId: 'doc-1', type: 'OCR', status: 'COMPLETED', output: {}, createdAt: '2026-06-09T10:00:10Z' },
+        ocrResult,
+      },
+    });
+  });
+  await page.route('**/api/v1/documents/doc-1/ocr-result', async (route) => {
+    await route.fulfill({ json: ocrResult });
+  });
+  await page.route('**/api/v1/documents/doc-1/processing-status', async (route) => {
+    await route.fulfill({
+      json: {
+        documentId: 'doc-1',
+        documentStatus: 'VALIDATION_PENDING',
+        latestJob: backendDocument.processingJobs[0],
+        ocrJob: { id: 'ocr-job', documentId: 'doc-1', type: 'OCR', status: 'COMPLETED', output: {}, createdAt: '2026-06-09T10:00:10Z' },
+        aiExtractionJob: backendDocument.processingJobs[0],
+        ocrResult: {
+          id: ocrResult.id,
+          status: ocrResult.status,
+          language: ocrResult.language,
+          characterCount: ocrResult.characterCount,
+          processingTimeMs: ocrResult.processingTimeMs,
+          errorMessage: ocrResult.errorMessage,
+        },
+      },
+    });
   });
   await page.route('**/api/v1/ai-extraction/documents/doc-1/run', async (route) => {
     await route.fulfill({ json: { job: { id: 'ai-job', documentId: 'doc-1', type: 'AI_EXTRACTION', status: 'COMPLETED', output: {}, createdAt: '2026-06-09T10:00:20Z' }, extracted: backendDocument.extractedFields } });

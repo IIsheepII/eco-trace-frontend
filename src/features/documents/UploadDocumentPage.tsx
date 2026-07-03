@@ -1,6 +1,6 @@
 import { zodResolver } from '@hookform/resolvers/zod';
 import { CloudUpload } from '@mui/icons-material';
-import { Alert, Box, Button, Card, CardContent, MenuItem, Stack, Step, StepLabel, Stepper, TextField, Typography } from '@mui/material';
+import { Alert, Box, Button, Card, CardContent, LinearProgress, MenuItem, Stack, Step, StepLabel, Stepper, TextField, Typography } from '@mui/material';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { useForm } from 'react-hook-form';
 import { useNavigate } from 'react-router-dom';
@@ -8,6 +8,7 @@ import { uploadDocumentSchema, type UploadDocumentFormValues } from '../../schem
 import { adminService } from '../../services/adminService';
 import { documentService } from '../../services/documentService';
 import { ErrorState, LoadingState } from '../../components/StateView';
+import { ApiError } from '../../services/apiClient';
 
 export function UploadDocumentPage() {
   const navigate = useNavigate();
@@ -20,7 +21,19 @@ export function UploadDocumentPage() {
   } = useForm<UploadDocumentFormValues>({ resolver: zodResolver(uploadDocumentSchema) });
   const documentTypesQuery = useQuery({ queryKey: ['admin', 'document-types'], queryFn: adminService.documentTypes });
   const uploadMutation = useMutation({ mutationFn: documentService.upload });
+  const processingMutation = useMutation({
+    mutationFn: async (documentId: string) => {
+      await documentService.processOcr(documentId);
+      await documentService.runAiExtraction(documentId);
+      return documentService.get(documentId);
+    },
+  });
   const files = watch('file');
+  const isSubmitting = uploadMutation.isPending || processingMutation.isPending;
+  const error = uploadMutation.error ?? processingMutation.error;
+  const errorMessage =
+    error instanceof ApiError ? error.message : error instanceof Error ? error.message : 'Unable to process the document.';
+  const submitPhase = uploadMutation.isPending ? 'Uploading document' : processingMutation.isPending ? 'Running OCR and AI extraction' : undefined;
 
   const onSubmit = handleSubmit(async (values) => {
     const formData = new FormData();
@@ -28,11 +41,10 @@ export function UploadDocumentPage() {
     formData.set('documentTypeId', values.documentTypeId);
     formData.set('file', values.file[0]);
     const uploaded = await uploadMutation.mutateAsync(formData);
-    await documentService.runOcr(uploaded.id);
-    await documentService.runAiExtraction(uploaded.id);
-    const processed = await documentService.get(uploaded.id);
+    const processed = await processingMutation.mutateAsync(uploaded.id);
     queryClient.setQueryData(['documents', uploaded.id], processed);
     queryClient.invalidateQueries({ queryKey: ['documents'] });
+    queryClient.invalidateQueries({ queryKey: ['metrics'] });
     navigate(`/documents/${uploaded.id}/processing`);
   });
 
@@ -41,7 +53,7 @@ export function UploadDocumentPage() {
 
   return (
     <Box sx={{ p: { xs: 2, md: 4 } }}>
-      <Stepper activeStep={0} sx={{ bgcolor: 'background.paper', borderBottom: 1, borderColor: 'divider', p: 3, mb: 4 }}>
+      <Stepper activeStep={0} alternativeLabel sx={{ bgcolor: 'background.paper', borderBottom: 1, borderColor: 'divider', p: { xs: 2, md: 3 }, mb: 4, overflowX: 'auto' }}>
         {['Upload', 'Extract', 'Validate', 'Complete'].map((label) => (
           <Step key={label}>
             <StepLabel>{label}</StepLabel>
@@ -54,7 +66,15 @@ export function UploadDocumentPage() {
       </Typography>
       <Box component="form" onSubmit={onSubmit}>
         <Stack gap={3} sx={{ maxWidth: 760 }}>
-          {uploadMutation.isError && <Alert severity="error">Upload failed. Check the file type and try again.</Alert>}
+          {(uploadMutation.isError || processingMutation.isError) && <Alert severity="error">{errorMessage}</Alert>}
+          {submitPhase && (
+            <Alert severity="info" icon={false}>
+              <Stack gap={1}>
+                <Typography>{submitPhase}</Typography>
+                <LinearProgress aria-label={submitPhase} />
+              </Stack>
+            </Alert>
+          )}
           <TextField label="Title" {...register('title')} error={Boolean(errors.title)} helperText={errors.title?.message} />
           <TextField select label="Document type" defaultValue="" {...register('documentTypeId')} error={Boolean(errors.documentTypeId)} helperText={errors.documentTypeId?.message}>
             {(documentTypesQuery.data ?? []).map((type) => (
@@ -88,8 +108,8 @@ export function UploadDocumentPage() {
               </Typography>
             </CardContent>
           </Card>
-          <Button type="submit" variant="contained" size="large" disabled={uploadMutation.isPending}>
-            Start AI extraction
+          <Button type="submit" variant="contained" size="large" disabled={isSubmitting}>
+            {submitPhase ?? 'Start AI extraction'}
           </Button>
         </Stack>
       </Box>

@@ -169,13 +169,13 @@ Frontend:
 
 ```bash
 VITE_API_BASE_URL=http://localhost:3000/api
-VITE_APP_ORIGIN=http://localhost:5173
+VITE_APP_ORIGIN=http://localhost:5174
 ```
 
 Backend:
 
 ```bash
-FRONTEND_ORIGIN=http://localhost:5173
+FRONTEND_ORIGIN=http://localhost:5174
 SESSION_COOKIE_NAME=avka.sid
 SESSION_COOKIE_HTTP_ONLY=true
 SESSION_COOKIE_SAME_SITE=lax
@@ -233,7 +233,7 @@ cp .env.example .env.local
 pnpm dev
 ```
 
-5. Open `http://localhost:5173`.
+5. Open `http://localhost:5174`.
 
 ## Development Workflow
 
