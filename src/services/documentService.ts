@@ -65,8 +65,8 @@ export function mapDocument(document: BackendDocument): DocumentRecord {
   return {
     id: document.id,
     name: document.title,
-    type: document.documentType?.name ?? document.documentType?.code ?? 'Document',
-    organisation: String(document.metadata?.organisation ?? 'Current organisation'),
+    type: document.documentType?.name ?? document.documentType?.code ?? 'Documento',
+    organisation: String(document.metadata?.organisation ?? 'Organización actual'),
     status: document.status,
     uploadedAt: document.createdAt,
     processedAt: finishedJobs.at(-1)?.finishedAt ?? undefined,

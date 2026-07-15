@@ -26,18 +26,18 @@ function asBackendDocumentStatus(status?: string): BackendDocumentStatus | undef
 function processingCopy(status?: BackendDocumentStatus) {
   switch (status) {
     case 'OCR_PENDING':
-      return 'OCR is reading the original file and preparing text for extraction.';
+      return 'El OCR está leyendo el archivo original y preparando el texto para la extracción.';
     case 'OCR_COMPLETED':
     case 'EXTRACTION_PENDING':
-      return 'OCR finished. AI extraction is preparing document fields.';
+      return 'El OCR finalizó. La extracción con IA está preparando los campos del documento.';
     case 'OCR_FAILED':
-      return 'OCR failed. Review the original file or OCR configuration before retrying.';
+      return 'El OCR falló. Revisa el archivo original o la configuración de OCR antes de reintentar.';
     case 'VALIDATION_PENDING':
-      return 'Extraction finished. The fields are ready for human validation.';
+      return 'La extracción finalizó. Los campos están listos para validación humana.';
     case 'VALIDATED':
-      return 'The document has been validated.';
+      return 'El documento fue validado.';
     default:
-      return 'The document is being analysed for OCR text, document entities and confidence scoring.';
+      return 'El documento está siendo analizado para obtener texto OCR, entidades y puntaje de confianza.';
   }
 }
 
@@ -62,11 +62,11 @@ export function ProcessingStatusPage() {
     retry: false,
   });
 
-  if (documentQuery.isLoading || statusQuery.isLoading) return <LoadingState label="Loading processing status" />;
+  if (documentQuery.isLoading || statusQuery.isLoading) return <LoadingState label="Cargando estado de procesamiento" />;
   if (documentQuery.isError || statusQuery.isError) {
     return (
       <ErrorState
-        message="Unable to load processing status"
+        message="No se pudo cargar el estado de procesamiento"
         onRetry={() => {
           documentQuery.refetch();
           statusQuery.refetch();
@@ -88,7 +88,7 @@ export function ProcessingStatusPage() {
   return (
     <Box sx={{ p: { xs: 2, md: 4 } }}>
       <Stepper activeStep={activeStep} alternativeLabel sx={{ bgcolor: 'background.paper', borderBottom: 1, borderColor: 'divider', p: { xs: 2, md: 3 }, mb: 4, overflowX: 'auto' }}>
-        {['Upload', 'Extract', 'Validate', 'Complete'].map((label) => (
+        {['Subir', 'Extraer', 'Validar', 'Completar'].map((label) => (
           <Step key={label}>
             <StepLabel>{label}</StepLabel>
           </Step>
@@ -97,7 +97,7 @@ export function ProcessingStatusPage() {
       <Card sx={{ maxWidth: 760 }}>
         <CardContent>
           <Stack direction={{ xs: 'column', sm: 'row' }} justifyContent="space-between" gap={2} sx={{ mb: 1 }}>
-            <Typography variant="h2">{canValidate ? 'Extraction Complete' : hasFailed ? 'Extraction Needs Attention' : 'AI Extraction in Progress'}</Typography>
+            <Typography variant="h2">{canValidate ? 'Extracción completada' : hasFailed ? 'La extracción requiere atención' : 'Extracción con IA en progreso'}</Typography>
             {currentStatus && <StatusChip status={currentStatus} />}
           </Stack>
           <Typography color="text.secondary" sx={{ mb: 3 }}>
@@ -105,14 +105,14 @@ export function ProcessingStatusPage() {
           </Typography>
           {hasFailed && (
             <Alert severity="error" sx={{ mb: 3 }}>
-              {latestJob?.errorMessage ?? processingStatus?.ocrResult?.errorMessage ?? 'Processing failed.'}
+              {latestJob?.errorMessage ?? processingStatus?.ocrResult?.errorMessage ?? 'El procesamiento falló.'}
             </Alert>
           )}
           <LinearProgress variant={isProcessing ? 'indeterminate' : 'determinate'} value={100} sx={{ mb: 3, borderRadius: 999 }} />
           <Stack gap={1.5} sx={{ mb: 3 }}>
             {latestJob && (
               <Stack direction={{ xs: 'column', sm: 'row' }} justifyContent="space-between" gap={1}>
-                <Typography color="text.secondary">Latest job</Typography>
+                <Typography color="text.secondary">Último trabajo</Typography>
                 <Stack direction="row" gap={1} alignItems="center">
                   <Typography>{latestJob.type}</Typography>
                   <StatusChip status={latestJob.status} />
@@ -121,13 +121,13 @@ export function ProcessingStatusPage() {
             )}
             {processingStatus?.ocrJob && (
               <Stack direction={{ xs: 'column', sm: 'row' }} justifyContent="space-between" gap={1}>
-                <Typography color="text.secondary">OCR job</Typography>
+                <Typography color="text.secondary">Trabajo OCR</Typography>
                 <StatusChip status={processingStatus.ocrJob.status} />
               </Stack>
             )}
             {processingStatus?.aiExtractionJob && (
               <Stack direction={{ xs: 'column', sm: 'row' }} justifyContent="space-between" gap={1}>
-                <Typography color="text.secondary">AI extraction job</Typography>
+                <Typography color="text.secondary">Trabajo de extracción IA</Typography>
                 <StatusChip status={processingStatus.aiExtractionJob.status} />
               </Stack>
             )}
@@ -135,15 +135,15 @@ export function ProcessingStatusPage() {
               <>
                 <Divider />
                 <Stack direction={{ xs: 'column', sm: 'row' }} justifyContent="space-between" gap={1}>
-                  <Typography color="text.secondary">OCR language</Typography>
+                  <Typography color="text.secondary">Idioma OCR</Typography>
                   <Typography>{processingStatus.ocrResult.language}</Typography>
                 </Stack>
                 <Stack direction={{ xs: 'column', sm: 'row' }} justifyContent="space-between" gap={1}>
-                  <Typography color="text.secondary">OCR characters</Typography>
+                  <Typography color="text.secondary">Caracteres OCR</Typography>
                   <Typography>{processingStatus.ocrResult.characterCount}</Typography>
                 </Stack>
                 <Stack direction={{ xs: 'column', sm: 'row' }} justifyContent="space-between" gap={1}>
-                  <Typography color="text.secondary">OCR time</Typography>
+                  <Typography color="text.secondary">Tiempo OCR</Typography>
                   <Typography>{processingStatus.ocrResult.processingTimeMs} ms</Typography>
                 </Stack>
               </>
@@ -152,7 +152,7 @@ export function ProcessingStatusPage() {
           {ocrText && (
             <Box sx={{ bgcolor: 'background.default', border: 1, borderColor: 'divider', borderRadius: 1, p: 2, mb: 3, maxHeight: 220, overflow: 'auto' }}>
               <Typography variant="caption" color="text.secondary">
-                OCR text
+                Texto OCR
               </Typography>
               <Typography component="pre" sx={{ m: 0, mt: 1, whiteSpace: 'pre-wrap', fontFamily: 'monospace', fontSize: 13 }}>
                 {ocrText}
@@ -161,15 +161,15 @@ export function ProcessingStatusPage() {
           )}
           <Stack direction={{ xs: 'column', sm: 'row' }} gap={2}>
             <Button component={RouterLink} to={`/documents/${id}`} variant="outlined">
-              View detail
+              Ver detalle
             </Button>
             {canValidate ? (
               <Button component={RouterLink} to={`/documents/${id}/validate`} variant="contained">
-                Validate fields
+                Validar campos
               </Button>
             ) : (
               <Button variant="contained" disabled>
-                Validate fields
+                Validar campos
               </Button>
             )}
           </Stack>

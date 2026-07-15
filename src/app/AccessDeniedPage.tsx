@@ -8,12 +8,12 @@ export function AccessDeniedPage() {
       <Card sx={{ maxWidth: 520 }}>
         <CardContent sx={{ textAlign: 'center', p: 5 }}>
           <Block color="error" sx={{ fontSize: 56 }} />
-          <Typography variant="h2">Access denied</Typography>
+          <Typography variant="h2">Acceso denegado</Typography>
           <Typography color="text.secondary" sx={{ my: 2 }}>
-            Your role does not include permission to view this workspace.
+            Tu rol no incluye permiso para ver este espacio de trabajo.
           </Typography>
           <Button component={RouterLink} to="/" variant="contained">
-            Return to dashboard
+            Volver al panel
           </Button>
         </CardContent>
       </Card>

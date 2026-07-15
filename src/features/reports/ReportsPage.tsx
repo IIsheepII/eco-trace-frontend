@@ -25,25 +25,25 @@ export function ReportsPage() {
 
   return (
     <Box sx={{ p: { xs: 2, md: 4 } }}>
-      <Typography variant="h2">Reports</Typography>
+      <Typography variant="h2">Reportes</Typography>
       <Typography color="text.secondary" sx={{ mb: 3 }}>
-        Configure system reports with live parameters and export formats.
+        Configura reportes del sistema con parámetros en vivo y formatos de exportación.
       </Typography>
       <Grid container spacing={3}>
         <Grid size={{ xs: 12, md: 5 }}>
           <Card>
             <CardContent>
               <Stack component="form" gap={2} onSubmit={form.handleSubmit((values) => reportMutation.mutate(values))}>
-                {reportMutation.isError && <Alert severity="error">Report generation failed.</Alert>}
-                {reportMutation.isSuccess && <Alert severity="success">Report generated.</Alert>}
-                <TextField label="Report title" {...form.register('title')} error={Boolean(form.formState.errors.title)} helperText={form.formState.errors.title?.message} />
-                <TextField label="Document ID (optional)" {...form.register('documentId')} />
-                <TextField select label="Format" defaultValue="PDF" {...form.register('format')}>
+                {reportMutation.isError && <Alert severity="error">La generación del reporte falló.</Alert>}
+                {reportMutation.isSuccess && <Alert severity="success">Reporte generado.</Alert>}
+                <TextField label="Título del reporte" {...form.register('title')} error={Boolean(form.formState.errors.title)} helperText={form.formState.errors.title?.message} />
+                <TextField label="ID de documento (opcional)" {...form.register('documentId')} />
+                <TextField select label="Formato" defaultValue="PDF" {...form.register('format')}>
                   <MenuItem value="PDF">PDF</MenuItem>
                   <MenuItem value="XLSX">XLSX</MenuItem>
                 </TextField>
                 <Button type="submit" variant="contained" startIcon={<Addchart />} disabled={reportMutation.isPending}>
-                  Generate report
+                  Generar reporte
                 </Button>
               </Stack>
             </CardContent>
@@ -52,18 +52,18 @@ export function ReportsPage() {
         <Grid size={{ xs: 12, md: 7 }}>
           <Card>
             <CardContent>
-              <Typography variant="h3">System Reports</Typography>
+              <Typography variant="h3">Reportes del sistema</Typography>
               <Typography color="text.secondary" sx={{ mb: 3 }}>
-                Performance analytics include extraction volume, validation turnaround, confidence trends and correction deltas.
+                Los análisis incluyen volumen de extracción, tiempos de validación, tendencias de confianza y diferencias por corrección.
               </Typography>
               <AppDataTable<Report>
                 rows={reportsQuery.data ?? []}
-                emptyLabel={reportsQuery.isLoading ? 'Loading reports' : 'No reports generated yet'}
+                emptyLabel={reportsQuery.isLoading ? 'Cargando reportes' : 'Aún no hay reportes generados'}
                 columns={[
-                  { key: 'title', header: 'Title', render: (row) => row.title },
-                  { key: 'format', header: 'Format', render: (row) => row.format },
-                  { key: 'durationMs', header: 'Duration', render: (row) => `${row.durationMs ?? 0} ms` },
-                  { key: 'createdAt', header: 'Created', render: (row) => new Date(row.createdAt).toLocaleString() },
+                  { key: 'title', header: 'Título', render: (row) => row.title },
+                  { key: 'format', header: 'Formato', render: (row) => row.format },
+                  { key: 'durationMs', header: 'Duración', render: (row) => `${row.durationMs ?? 0} ms` },
+                  { key: 'createdAt', header: 'Creado', render: (row) => new Date(row.createdAt).toLocaleString() },
                 ]}
               />
             </CardContent>

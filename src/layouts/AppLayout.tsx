@@ -40,16 +40,16 @@ import { stitchColors } from '../theme/theme';
 const drawerWidth = 280;
 
 const navItems: { label: string; path: string; icon: ReactElement; permissions?: string[] }[] = [
-  { label: 'Dashboard', path: '/', icon: <Dashboard /> },
-  { label: 'Documents', path: '/documents', icon: <Description /> },
-  { label: 'Upload', path: '/documents/upload', icon: <Article />, permissions: ['documents:manage'] },
-  { label: 'Reports', path: '/reports', icon: <Analytics />, permissions: ['reports:read'] },
-  { label: 'Processing History', path: '/processing-history', icon: <History />, permissions: ['documents:manage'] },
-  { label: 'Organizations', path: '/organisations', icon: <CorporateFare />, permissions: ['organisations:manage'] },
-  { label: 'Users & Roles', path: '/users', icon: <Group />, permissions: ['users:manage'] },
-  { label: 'Document Types', path: '/document-types', icon: <Tune />, permissions: ['documents:manage'] },
-  { label: 'Audit Log', path: '/audit-log', icon: <History />, permissions: ['settings:manage'] },
-  { label: 'Settings', path: '/settings', icon: <Settings />, permissions: ['settings:manage'] },
+  { label: 'Panel', path: '/', icon: <Dashboard /> },
+  { label: 'Documentos', path: '/documents', icon: <Description /> },
+  { label: 'Subir documento', path: '/documents/upload', icon: <Article />, permissions: ['documents:manage'] },
+  { label: 'Reportes', path: '/reports', icon: <Analytics />, permissions: ['reports:read'] },
+  { label: 'Historial de procesamiento', path: '/processing-history', icon: <History />, permissions: ['documents:manage'] },
+  { label: 'Organizaciones', path: '/organisations', icon: <CorporateFare />, permissions: ['organisations:manage'] },
+  { label: 'Usuarios y roles', path: '/users', icon: <Group />, permissions: ['users:manage'] },
+  { label: 'Tipos de documento', path: '/document-types', icon: <Tune />, permissions: ['documents:manage'] },
+  { label: 'Auditoría', path: '/audit-log', icon: <History />, permissions: ['settings:manage'] },
+  { label: 'Configuración', path: '/settings', icon: <Settings />, permissions: ['settings:manage'] },
 ];
 
 function Sidebar({ onNavigate }: { onNavigate?: () => void }) {
@@ -64,7 +64,7 @@ function Sidebar({ onNavigate }: { onNavigate?: () => void }) {
         <Box>
           <Typography variant="h6">AVKA Intelligence</Typography>
           <Typography variant="caption" sx={{ color: stitchColors.surfaceHighest }}>
-            Enterprise Tier
+            Plataforma empresarial
           </Typography>
         </Box>
       </Box>
@@ -77,7 +77,7 @@ function Sidebar({ onNavigate }: { onNavigate?: () => void }) {
         }}
         sx={{ mb: 3, py: 1.25, borderRadius: 3 }}
       >
-        New Document
+        Nuevo documento
       </Button>
       <List sx={{ flex: 1 }}>
         {visibleItems.map((item) => (
@@ -127,15 +127,15 @@ export function AppLayout() {
       >
         <Toolbar sx={{ gap: 2 }}>
           {!isDesktop && (
-            <IconButton aria-label="Open navigation" onClick={() => setMobileOpen(true)}>
+            <IconButton aria-label="Abrir navegación" onClick={() => setMobileOpen(true)}>
               <Menu />
             </IconButton>
           )}
           <Box sx={{ display: 'flex', alignItems: 'center', bgcolor: stitchColors.surfaceLow, borderRadius: 999, px: 2, maxWidth: 480, flex: 1 }}>
             <Search fontSize="small" color="action" />
-            <InputBase fullWidth placeholder="Search documents, entities, or batches..." sx={{ ml: 1 }} inputProps={{ 'aria-label': 'Global search' }} />
+            <InputBase fullWidth placeholder="Buscar documentos, entidades o lotes..." sx={{ ml: 1 }} inputProps={{ 'aria-label': 'Búsqueda global' }} />
           </Box>
-          <IconButton aria-label="Notifications">
+          <IconButton aria-label="Notificaciones">
             <Notifications />
           </IconButton>
         </Toolbar>

@@ -8,12 +8,12 @@ describe('AppDataTable', () => {
     renderWithProviders(
       <AppDataTable
         rows={[{ id: '1', name: 'EPA-Form-8700-22.pdf' }]}
-        emptyLabel="No documents"
-        columns={[{ key: 'name', header: 'Document', render: (row) => row.name }]}
+        emptyLabel="No hay documentos"
+        columns={[{ key: 'name', header: 'Documento', render: (row) => row.name }]}
       />,
     );
 
-    expect(screen.getByRole('table', { name: 'No documents' })).toBeInTheDocument();
+    expect(screen.getByRole('table', { name: 'No hay documentos' })).toBeInTheDocument();
     expect(screen.getByText('EPA-Form-8700-22.pdf')).toBeInTheDocument();
   });
 });

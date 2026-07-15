@@ -82,8 +82,8 @@ export function ValidateDocumentPage() {
   });
   const { fields } = useFieldArray({ control: form.control, name: 'fields' });
 
-  if (documentQuery.isLoading) return <LoadingState label="Loading validation workspace" />;
-  if (documentQuery.isError || !documentQuery.data) return <ErrorState message="Unable to load validation workspace" onRetry={() => documentQuery.refetch()} />;
+  if (documentQuery.isLoading) return <LoadingState label="Cargando espacio de validación" />;
+  if (documentQuery.isError || !documentQuery.data) return <ErrorState message="No se pudo cargar el espacio de validación" onRetry={() => documentQuery.refetch()} />;
 
   const doc = documentQuery.data;
   const fieldIndexesByKey = new Map(doc.fields?.map((field, index) => [field.key, index]) ?? []);
@@ -95,7 +95,7 @@ export function ValidateDocumentPage() {
     .filter((section) => section.indexes.length > 0);
   const groupedIndexes = new Set(groupedFields.flatMap((section) => section.indexes));
   const ungroupedIndexes = fields.map((_, index) => index).filter((index) => !groupedIndexes.has(index));
-  const sections: RenderSection[] = groupedFields.length > 0 ? groupedFields : [{ title: 'Extracted fields', indexes: fields.map((_, index) => index) }];
+  const sections: RenderSection[] = groupedFields.length > 0 ? groupedFields : [{ title: 'Campos extraídos', indexes: fields.map((_, index) => index) }];
   if (groupedFields.length > 0 && ungroupedIndexes.length > 0) {
     sections.push({ title: 'Otros campos', indexes: ungroupedIndexes });
   }
@@ -138,7 +138,7 @@ export function ValidateDocumentPage() {
   return (
     <Box>
       <Stepper activeStep={2} alternativeLabel sx={{ bgcolor: 'background.paper', borderBottom: 1, borderColor: 'divider', p: { xs: 2, md: 3 }, overflowX: 'auto' }}>
-        {['Upload', 'Extract', 'Validate', 'Complete'].map((label) => (
+        {['Subir', 'Extraer', 'Validar', 'Completar'].map((label) => (
           <Step key={label}>
             <StepLabel>{label}</StepLabel>
           </Step>
@@ -152,17 +152,17 @@ export function ValidateDocumentPage() {
           <Grid size={{ xs: 12, lg: 6 }}>
             <Stack direction={{ xs: 'column', sm: 'row' }} justifyContent="space-between" gap={2} sx={{ mb: 2 }}>
               <Box>
-                <Typography variant="h2">Validate Manifest</Typography>
-                <Typography color="text.secondary">Compare AI values with human-corrected fields before saving.</Typography>
+                <Typography variant="h2">Validar manifiesto</Typography>
+                <Typography color="text.secondary">Compara los valores de IA con los campos corregidos antes de guardar.</Typography>
               </Box>
               <Button type="submit" variant="contained" disabled={validationMutation.isPending}>
-                {validationMutation.isPending ? 'Saving validation' : 'Save validated data'}
+                {validationMutation.isPending ? 'Guardando validación' : 'Guardar datos validados'}
               </Button>
             </Stack>
-            {validationMutation.isError && <Alert severity="error" sx={{ mb: 2 }}>Unable to save validated data. Review the fields and try again.</Alert>}
+            {validationMutation.isError && <Alert severity="error" sx={{ mb: 2 }}>No se pudieron guardar los datos validados. Revisa los campos e inténtalo nuevamente.</Alert>}
             <Stack gap={2}>
               {fields.length === 0 && (
-                <EmptyState title="No extracted fields" body="Run OCR and AI extraction before validating this document." />
+                <EmptyState title="No hay campos extraídos" body="Ejecuta OCR y extracción con IA antes de validar este documento." />
               )}
               {sections.map((section) => (
                 <Box key={section.title}>
@@ -174,7 +174,7 @@ export function ValidateDocumentPage() {
                   </Box>
                 </Box>
               ))}
-              <TextField label="Validation notes" {...form.register('notes')} multiline minRows={3} />
+              <TextField label="Notas de validación" {...form.register('notes')} multiline minRows={3} />
             </Stack>
           </Grid>
         </Grid>

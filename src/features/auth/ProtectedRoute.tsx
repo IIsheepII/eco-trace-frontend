@@ -7,7 +7,7 @@ export function ProtectedRoute({ permissions }: { permissions?: string[] }) {
   const location = useLocation();
 
   if (isLoading) {
-    return <LoadingState label="Checking session" />;
+    return <LoadingState label="Verificando sesión" />;
   }
 
   if (!user) {

@@ -3,21 +3,21 @@ import { z } from 'zod';
 const MAX_UPLOAD_SIZE_BYTES = 20 * 1024 * 1024;
 
 export const uploadDocumentSchema = z.object({
-  title: z.string().min(1, 'Enter a document title'),
-  documentTypeId: z.string().min(1, 'Choose a document type'),
+  title: z.string().min(1, 'Ingresa un título para el documento'),
+  documentTypeId: z.string().min(1, 'Elige un tipo de documento'),
   file: z
     .custom<FileList>()
-    .refine((files) => files && files.length === 1, 'Upload one file')
+    .refine((files) => files && files.length === 1, 'Sube un archivo')
     .refine(
       (files) =>
         Array.from(files ?? []).every((file) =>
           ['application/pdf', 'image/jpeg', 'image/png', 'image/tiff', 'image/webp'].includes(file.type),
         ),
-      'Only PDF, JPG, PNG, TIFF or WEBP files are supported',
+      'Solo se admiten archivos PDF, JPG, PNG, TIFF o WEBP',
     )
     .refine(
       (files) => Array.from(files ?? []).every((file) => file.size <= MAX_UPLOAD_SIZE_BYTES),
-      'Files must be 20 MB or smaller',
+      'Los archivos deben pesar 20 MB o menos',
     ),
 });
 
@@ -26,7 +26,7 @@ export const fieldValidationSchema = z.object({
     z.object({
       fieldDefinitionId: z.string(),
       extractedFieldId: z.string().optional(),
-      finalValue: z.string().min(1, 'Enter a validated value'),
+      finalValue: z.string().min(1, 'Ingresa un valor validado'),
     }),
   ),
   notes: z.string().optional(),

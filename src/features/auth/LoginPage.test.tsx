@@ -45,9 +45,9 @@ describe('LoginPage', () => {
       });
     renderLogin();
 
-    fireEvent.change(screen.getByLabelText(/work email/i), { target: { value: 'alex@avka.test' } });
-    fireEvent.change(screen.getByLabelText(/password/i), { target: { value: 'password123' } });
-    fireEvent.click(screen.getByRole('button', { name: /sign in/i }));
+    fireEvent.change(screen.getByLabelText(/correo de trabajo/i), { target: { value: 'alex@avka.test' } });
+    fireEvent.change(screen.getByLabelText(/contraseña/i), { target: { value: 'password123' } });
+    fireEvent.click(screen.getByRole('button', { name: /iniciar sesión/i }));
 
     await waitFor(() =>
       expect(requestMock).toHaveBeenCalledWith(

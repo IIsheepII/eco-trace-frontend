@@ -22,40 +22,40 @@ export function DocumentsPage() {
     <Box sx={{ p: { xs: 2, md: 4 } }}>
       <Stack direction={{ xs: 'column', md: 'row' }} justifyContent="space-between" gap={2} sx={{ mb: 3 }}>
         <Box>
-          <Typography variant="h2">Documents</Typography>
-          <Typography color="text.secondary">Search, filter and validate extracted document intelligence.</Typography>
+          <Typography variant="h2">Documentos</Typography>
+          <Typography color="text.secondary">Busca, filtra y valida la información extraída de los documentos.</Typography>
         </Box>
         {canUpload && (
           <Button component={RouterLink} to="/documents/upload" variant="contained" startIcon={<Add />}>
-            New Document
+            Nuevo documento
           </Button>
         )}
       </Stack>
       <Stack direction={{ xs: 'column', md: 'row' }} gap={2} sx={{ mb: 3 }}>
         <TextField
-          label="Search documents"
+          label="Buscar documentos"
           InputProps={{ startAdornment: <Search fontSize="small" /> }}
           onChange={(event) => setFilters((current) => ({ ...current, q: event.target.value }))}
         />
-        <TextField select label="Status" defaultValue="" sx={{ minWidth: 220 }} onChange={(event) => setStatusFilter(event.target.value as BackendDocumentStatus | '')}>
-          <MenuItem value="">All statuses</MenuItem>
-          <MenuItem value="OCR_PENDING">OCR pending</MenuItem>
-          <MenuItem value="EXTRACTION_PENDING">Extraction pending</MenuItem>
-          <MenuItem value="VALIDATION_PENDING">Needs validation</MenuItem>
-          <MenuItem value="VALIDATED">Validated</MenuItem>
-          <MenuItem value="REJECTED">Rejected</MenuItem>
+        <TextField select label="Estado" defaultValue="" sx={{ minWidth: 220 }} onChange={(event) => setStatusFilter(event.target.value as BackendDocumentStatus | '')}>
+          <MenuItem value="">Todos los estados</MenuItem>
+          <MenuItem value="OCR_PENDING">OCR pendiente</MenuItem>
+          <MenuItem value="EXTRACTION_PENDING">Extracción pendiente</MenuItem>
+          <MenuItem value="VALIDATION_PENDING">Requiere validación</MenuItem>
+          <MenuItem value="VALIDATED">Validado</MenuItem>
+          <MenuItem value="REJECTED">Rechazado</MenuItem>
         </TextField>
       </Stack>
-      {documentsQuery.isLoading && <LoadingState label="Loading documents" />}
-      {documentsQuery.isError && <ErrorState message="Unable to load documents" onRetry={() => documentsQuery.refetch()} />}
+      {documentsQuery.isLoading && <LoadingState label="Cargando documentos" />}
+      {documentsQuery.isError && <ErrorState message="No se pudieron cargar los documentos" onRetry={() => documentsQuery.refetch()} />}
       {!documentsQuery.isLoading && rows.length === 0 && (
         <EmptyState
-          title="No documents yet"
-          body="Upload manifests or images to start the AI extraction pipeline."
+          title="Aún no hay documentos"
+          body="Sube manifiestos o imágenes para iniciar el flujo de extracción con IA."
           action={
             canUpload ? (
               <Button component={RouterLink} to="/documents/upload" variant="contained">
-                Upload document
+                Subir documento
               </Button>
             ) : undefined
           }
@@ -64,14 +64,14 @@ export function DocumentsPage() {
       {rows.length > 0 && (
         <AppDataTable<DocumentRecord>
           rows={rows}
-          emptyLabel="No documents match these filters"
+          emptyLabel="Ningún documento coincide con estos filtros"
           columns={[
-            { key: 'name', header: 'Document', render: (row) => <Button component={RouterLink} to={`/documents/${row.id}`}>{row.name}</Button> },
-            { key: 'type', header: 'Type', render: (row) => row.type },
-            { key: 'organisation', header: 'Organisation', render: (row) => row.organisation },
-            { key: 'confidence', header: 'AI Confidence', render: (row) => `${row.confidence ?? 0}%` },
-            { key: 'status', header: 'Status', render: (row) => <StatusChip status={row.status} /> },
-            { key: 'uploadedAt', header: 'Uploaded', render: (row) => new Date(row.uploadedAt).toLocaleDateString() },
+            { key: 'name', header: 'Documento', render: (row) => <Button component={RouterLink} to={`/documents/${row.id}`}>{row.name}</Button> },
+            { key: 'type', header: 'Tipo', render: (row) => row.type },
+            { key: 'organisation', header: 'Organización', render: (row) => row.organisation },
+            { key: 'confidence', header: 'Confianza IA', render: (row) => `${row.confidence ?? 0}%` },
+            { key: 'status', header: 'Estado', render: (row) => <StatusChip status={row.status} /> },
+            { key: 'uploadedAt', header: 'Subido', render: (row) => new Date(row.uploadedAt).toLocaleDateString() },
           ]}
         />
       )}

@@ -47,23 +47,23 @@ export function DocumentPreview({ name, fileUrl, documentId }: { name: string; f
           <Typography variant="h6" sx={{ overflowWrap: 'anywhere' }}>{name}</Typography>
         </Stack>
         <Stack direction="row">
-          <Tooltip title="Browser PDF controls handle zoom">
+          <Tooltip title="Los controles del navegador gestionan el zoom del PDF">
             <span>
-              <IconButton aria-label="Zoom in" disabled>
+              <IconButton aria-label="Acercar" disabled>
                 <ZoomIn />
               </IconButton>
             </span>
           </Tooltip>
-          <Tooltip title="Browser PDF controls handle zoom">
+          <Tooltip title="Los controles del navegador gestionan el zoom del PDF">
             <span>
-              <IconButton aria-label="Zoom out" disabled>
+              <IconButton aria-label="Alejar" disabled>
                 <ZoomOut />
               </IconButton>
             </span>
           </Tooltip>
-          <Tooltip title="Rotation is not available for this preview">
+          <Tooltip title="La rotación no está disponible para esta vista previa">
             <span>
-              <IconButton aria-label="Rotate document" disabled>
+              <IconButton aria-label="Rotar documento" disabled>
                 <RotateRight />
               </IconButton>
             </span>
@@ -76,17 +76,17 @@ export function DocumentPreview({ name, fileUrl, documentId }: { name: string; f
         ) : isPreviewLoading ? (
           <Box sx={{ minHeight: 360, display: 'grid', placeItems: 'center', textAlign: 'center', color: 'text.secondary' }}>
             <Box>
-              <CircularProgress size={32} aria-label="Loading preview" />
-              <Typography variant="h6" sx={{ mt: 2 }}>Loading preview</Typography>
+              <CircularProgress size={32} aria-label="Cargando vista previa" />
+              <Typography variant="h6" sx={{ mt: 2 }}>Cargando vista previa</Typography>
             </Box>
           </Box>
         ) : (
           <Box sx={{ minHeight: 360, display: 'grid', placeItems: 'center', textAlign: 'center', color: 'text.secondary' }}>
             <Box>
               <PictureAsPdf color="disabled" sx={{ fontSize: 56, mb: 1 }} />
-              <Typography variant="h6">Preview unavailable</Typography>
+              <Typography variant="h6">Vista previa no disponible</Typography>
               <Typography variant="body2">
-                {previewError ? 'Unable to load the authenticated file preview.' : 'The original file is not attached to this document.'}
+                {previewError ? 'No se pudo cargar la vista previa autenticada del archivo.' : 'El archivo original no está adjunto a este documento.'}
               </Typography>
             </Box>
           </Box>

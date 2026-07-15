@@ -10,8 +10,8 @@ export function DocumentDetailPage() {
   const { id = '' } = useParams();
   const documentQuery = useQuery({ queryKey: ['documents', id], queryFn: () => documentService.get(id), enabled: Boolean(id) });
 
-  if (documentQuery.isLoading) return <LoadingState label="Loading document detail" />;
-  if (documentQuery.isError || !documentQuery.data) return <ErrorState message="Unable to load document detail" onRetry={() => documentQuery.refetch()} />;
+  if (documentQuery.isLoading) return <LoadingState label="Cargando detalle del documento" />;
+  if (documentQuery.isError || !documentQuery.data) return <ErrorState message="No se pudo cargar el detalle del documento" onRetry={() => documentQuery.refetch()} />;
 
   const doc = documentQuery.data;
 
@@ -26,7 +26,7 @@ export function DocumentDetailPage() {
           </Stack>
         </Box>
         <Button component={RouterLink} to={`/documents/${doc.id}/validate`} variant="contained">
-          Validate extracted fields
+          Validar campos extraídos
         </Button>
       </Stack>
       <Grid container spacing={3}>
@@ -46,7 +46,7 @@ export function DocumentDetailPage() {
                       <Typography>{field.humanValue || field.aiValue}</Typography>
                       {field.humanValue && field.humanValue !== field.aiValue && (
                         <Typography variant="body2" color="text.secondary">
-                          AI value: {field.aiValue}
+                          Valor IA: {field.aiValue}
                         </Typography>
                       )}
                     </Box>

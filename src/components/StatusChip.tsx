@@ -2,22 +2,22 @@ import { Chip } from '@mui/material';
 import type { DocumentStatus, ValidationStatus } from '../types/domain';
 
 const statusMap: Record<DocumentStatus | ValidationStatus, { label: string; color: 'default' | 'primary' | 'success' | 'warning' | 'error' }> = {
-  UPLOADED: { label: 'Uploaded', color: 'default' },
-  OCR_PENDING: { label: 'OCR pending', color: 'primary' },
-  OCR_COMPLETED: { label: 'OCR complete', color: 'success' },
-  OCR_FAILED: { label: 'OCR failed', color: 'error' },
-  EXTRACTION_PENDING: { label: 'Extraction pending', color: 'primary' },
-  EXTRACTION_COMPLETED: { label: 'Extraction complete', color: 'success' },
-  VALIDATION_PENDING: { label: 'Needs validation', color: 'warning' },
-  VALIDATED: { label: 'Validated', color: 'success' },
-  REJECTED: { label: 'Rejected', color: 'error' },
-  QUEUED: { label: 'Queued', color: 'default' },
-  RUNNING: { label: 'Running', color: 'primary' },
-  COMPLETED: { label: 'Completed', color: 'success' },
-  FAILED: { label: 'Failed', color: 'error' },
-  PENDING: { label: 'Pending', color: 'default' },
-  APPROVED: { label: 'Approved', color: 'success' },
-  CORRECTED: { label: 'Corrected', color: 'warning' },
+  UPLOADED: { label: 'Subido', color: 'default' },
+  OCR_PENDING: { label: 'OCR pendiente', color: 'primary' },
+  OCR_COMPLETED: { label: 'OCR completado', color: 'success' },
+  OCR_FAILED: { label: 'OCR fallido', color: 'error' },
+  EXTRACTION_PENDING: { label: 'Extracción pendiente', color: 'primary' },
+  EXTRACTION_COMPLETED: { label: 'Extracción completada', color: 'success' },
+  VALIDATION_PENDING: { label: 'Requiere validación', color: 'warning' },
+  VALIDATED: { label: 'Validado', color: 'success' },
+  REJECTED: { label: 'Rechazado', color: 'error' },
+  QUEUED: { label: 'En cola', color: 'default' },
+  RUNNING: { label: 'En ejecución', color: 'primary' },
+  COMPLETED: { label: 'Completado', color: 'success' },
+  FAILED: { label: 'Fallido', color: 'error' },
+  PENDING: { label: 'Pendiente', color: 'default' },
+  APPROVED: { label: 'Aprobado', color: 'success' },
+  CORRECTED: { label: 'Corregido', color: 'warning' },
 };
 
 export function StatusChip({ status }: { status: DocumentStatus | ValidationStatus }) {

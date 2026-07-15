@@ -1,7 +1,7 @@
 import { Alert, Box, Button, CircularProgress, Typography } from '@mui/material';
 import type { ReactNode } from 'react';
 
-export function LoadingState({ label = 'Loading workspace' }: { label?: string }) {
+export function LoadingState({ label = 'Cargando espacio de trabajo' }: { label?: string }) {
   return (
     <Box sx={{ minHeight: 240, display: 'grid', placeItems: 'center', gap: 2 }}>
       <CircularProgress aria-label={label} />
@@ -17,7 +17,7 @@ export function ErrorState({ message, onRetry }: { message: string; onRetry?: ()
       action={
         onRetry ? (
           <Button color="inherit" size="small" onClick={onRetry}>
-            Retry
+            Reintentar
           </Button>
         ) : undefined
       }

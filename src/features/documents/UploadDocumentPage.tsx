@@ -32,8 +32,8 @@ export function UploadDocumentPage() {
   const isSubmitting = uploadMutation.isPending || processingMutation.isPending;
   const error = uploadMutation.error ?? processingMutation.error;
   const errorMessage =
-    error instanceof ApiError ? error.message : error instanceof Error ? error.message : 'Unable to process the document.';
-  const submitPhase = uploadMutation.isPending ? 'Uploading document' : processingMutation.isPending ? 'Running OCR and AI extraction' : undefined;
+    error instanceof ApiError ? error.message : error instanceof Error ? error.message : 'No se pudo procesar el documento.';
+  const submitPhase = uploadMutation.isPending ? 'Subiendo documento' : processingMutation.isPending ? 'Ejecutando OCR y extracción con IA' : undefined;
 
   const onSubmit = handleSubmit(async (values) => {
     const formData = new FormData();
@@ -48,21 +48,21 @@ export function UploadDocumentPage() {
     navigate(`/documents/${uploaded.id}/processing`);
   });
 
-  if (documentTypesQuery.isLoading) return <LoadingState label="Loading document types" />;
-  if (documentTypesQuery.isError) return <ErrorState message="Unable to load document types" onRetry={() => documentTypesQuery.refetch()} />;
+  if (documentTypesQuery.isLoading) return <LoadingState label="Cargando tipos de documento" />;
+  if (documentTypesQuery.isError) return <ErrorState message="No se pudieron cargar los tipos de documento" onRetry={() => documentTypesQuery.refetch()} />;
 
   return (
     <Box sx={{ p: { xs: 2, md: 4 } }}>
       <Stepper activeStep={0} alternativeLabel sx={{ bgcolor: 'background.paper', borderBottom: 1, borderColor: 'divider', p: { xs: 2, md: 3 }, mb: 4, overflowX: 'auto' }}>
-        {['Upload', 'Extract', 'Validate', 'Complete'].map((label) => (
+        {['Subir', 'Extraer', 'Validar', 'Completar'].map((label) => (
           <Step key={label}>
             <StepLabel>{label}</StepLabel>
           </Step>
         ))}
       </Stepper>
-      <Typography variant="h2">Upload Document</Typography>
+      <Typography variant="h2">Subir documento</Typography>
       <Typography color="text.secondary" sx={{ mb: 3 }}>
-        Add PDFs or images with organisation context before AI extraction starts.
+        Agrega PDFs o imágenes con el contexto de la organización antes de iniciar la extracción con IA.
       </Typography>
       <Box component="form" onSubmit={onSubmit}>
         <Stack gap={3} sx={{ maxWidth: 760 }}>
@@ -75,8 +75,8 @@ export function UploadDocumentPage() {
               </Stack>
             </Alert>
           )}
-          <TextField label="Title" {...register('title')} error={Boolean(errors.title)} helperText={errors.title?.message} />
-          <TextField select label="Document type" defaultValue="" {...register('documentTypeId')} error={Boolean(errors.documentTypeId)} helperText={errors.documentTypeId?.message}>
+          <TextField label="Título" {...register('title')} error={Boolean(errors.title)} helperText={errors.title?.message} />
+          <TextField select label="Tipo de documento" defaultValue="" {...register('documentTypeId')} error={Boolean(errors.documentTypeId)} helperText={errors.documentTypeId?.message}>
             {(documentTypesQuery.data ?? []).map((type) => (
               <MenuItem key={type.id} value={type.id}>
                 {type.name}
@@ -95,21 +95,21 @@ export function UploadDocumentPage() {
               }}
             >
               <CloudUpload color="primary" sx={{ fontSize: 48 }} />
-              <Typography variant="h3">Drop files here or browse</Typography>
+              <Typography variant="h3">Arrastra archivos aquí o busca en tu equipo</Typography>
               <Typography color="text.secondary" sx={{ mb: 2 }}>
-                PDF, JPG, PNG, TIFF and WEBP files are supported.
+                Se admiten archivos PDF, JPG, PNG, TIFF y WEBP.
               </Typography>
               <Button variant="outlined" component="label">
-                Choose files
+                Elegir archivos
                 <input hidden type="file" accept="application/pdf,image/png,image/jpeg,image/tiff,image/webp" {...register('file')} />
               </Button>
               <Typography color={errors.file ? 'error' : 'text.secondary'} sx={{ mt: 2 }}>
-                {errors.file?.message ?? (files?.length ? files[0].name : 'No file selected')}
+                {errors.file?.message ?? (files?.length ? files[0].name : 'Ningún archivo seleccionado')}
               </Typography>
             </CardContent>
           </Card>
           <Button type="submit" variant="contained" size="large" disabled={isSubmitting}>
-            {submitPhase ?? 'Start AI extraction'}
+            {submitPhase ?? 'Iniciar extracción con IA'}
           </Button>
         </Stack>
       </Box>

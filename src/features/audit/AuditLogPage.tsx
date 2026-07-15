@@ -7,23 +7,23 @@ import type { AuditEvent } from '../../types/domain';
 
 export function AuditLogPage() {
   const auditQuery = useQuery({ queryKey: ['audit-log'], queryFn: adminService.auditLog });
-  if (auditQuery.isLoading) return <LoadingState label="Loading audit log" />;
-  if (auditQuery.isError) return <ErrorState message="Unable to load audit log" onRetry={() => auditQuery.refetch()} />;
+  if (auditQuery.isLoading) return <LoadingState label="Cargando auditoría" />;
+  if (auditQuery.isError) return <ErrorState message="No se pudo cargar la auditoría" onRetry={() => auditQuery.refetch()} />;
 
   return (
     <Box sx={{ p: { xs: 2, md: 4 } }}>
-      <Typography variant="h2">Audit Log</Typography>
+      <Typography variant="h2">Auditoría</Typography>
       <Typography color="text.secondary" sx={{ mb: 3 }}>
-        Full traceability of document actions, data corrections and system changes.
+        Trazabilidad completa de acciones sobre documentos, correcciones de datos y cambios del sistema.
       </Typography>
       <AppDataTable<AuditEvent>
         rows={auditQuery.data ?? []}
-        emptyLabel="No audit events found"
+        emptyLabel="No se encontraron eventos de auditoría"
         columns={[
-          { key: 'createdAt', header: 'Date', render: (row) => new Date(row.createdAt).toLocaleString() },
+          { key: 'createdAt', header: 'Fecha', render: (row) => new Date(row.createdAt).toLocaleString() },
           { key: 'actor', header: 'Actor', render: (row) => row.actor },
-          { key: 'action', header: 'Action', render: (row) => row.action },
-          { key: 'target', header: 'Target', render: (row) => row.target },
+          { key: 'action', header: 'Acción', render: (row) => row.action },
+          { key: 'target', header: 'Destino', render: (row) => row.target },
         ]}
       />
     </Box>
