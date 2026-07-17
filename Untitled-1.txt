@@ -1,0 +1,168 @@
+PERÚ
+
+Ministerio
+
+del Ambiente
+
+AVKA
+
+AÑO 2026
+
+MES
+
+ABRIL
+
+MANIFIESTO DE MANEJO DE RESIDUOS SÓLIDOS PELIGROSOS
+
+1. DATOS GENERALES DEL GENERADOR (Corresponde a ser llenado por el generador de residuos sólidos peligrosos)
+Razón social
+N° RUC
+Representante legal
+20172772278
+HOSPITAL REGIONAL DE AYACUCHO-MIGUEL ANGEL MARISCAL LLERENA
+Correo electrónico tramites@hrayacucho.gob.pe Teléfono
+PAREDES CABEL JOSE RAMON
+DNI/CE
+066312380
+01157772
+1.1. DATOS DE LA PLANTA/INSTALACIÓN (Fuente de Generación)
+Denominación de planta
+Dirección de planta
+Distrito
+HOSPITAL REGIONAL DE AYACUCHO
+Av. Alcides Carrión
+Tipo de planta:
+Ubigeo
+ESTABLECIMIENTO DE SALUD
+ANDRES AVELINO CACERES
+Provincia
+HUAMANGA
+Departamento
+Coordenadas UTM WGS84:
+Actividad económica (CIIU)
+Norte
+ATENCION DE SALUD
+SALUD
+8544654.28 m S
+Este
+586697.37 m E
+Zona
+050101
+AYACUCHO
+18 S
+Sector/Subsector:
+Responsable de la gestión y
+manejo de los residuos sólidos
+DNI/CE
+DANIELA INDHIRA AYALA GOMEZ
+Cargo
+70057869
+Correo electrónico
+daniela.indhira@gmail.com
+Teléfono
+1.1.1. INSTRUMENTO DE GESTIÓN AMBIENTAL DE LA PLANTA / INSTALACIÓN
+¿Cuenta con IGA aprobado?
+Si X
+No
+Fecha de aprobación
+08/04/2014
+Institución que aprueba
+N° de Resolución
+2. DATOS DEL RESIDUO PELIGROSO MANEJADO
+2.1. CARACTERÍSTICAS DEL RESIDUO SÓLIDO
+Descripción del residuo
+Estado del residuo
+2.2. CARACTERÍSTICAS DEL RECIPIENTE
+Tipo de recipiente
+Tipo de recipiente
+Tipo de recipiente
+PELIGROSOS
+Sólido
+RESIDUOS HOSPITALARIOS
+Semisólido
+BOLSAS ROJAS
+Material
+BOLSAS AMARILLAS
+Material
+CAJAS
+Material
+Responsable de Salud Ambiental
+971 621 875
+MINISTERIO DE SALUD
+R.D. 671-2014/DEPA/DIGESA/SA
+Cantidad total (KG)
+Líquido
+Gas
+POLIETILENO
+POLIETILENO
+CARTON
+N° de recipientes
+N° de recipientes
+N° de recipientes
+Código de clasificación del residuo, según el Convenio de Basilea (Anexo III del Reglamento de la LGIRS)
+(Seleccionar según corresponda)
+A1: Residuos metálicos o que contengan metales.
+A2: Residuos que contengan principalmente constituyentes inorgánicos, que puedan contener metales o materia orgánica.
+A3: Residuos que contengan principalmente constituyentes orgánicos, que puedan contener metales y materia inorgánica.
+A4: Residuos que pueden contener constituyentes inorgánicos u orgánicos
+Sub Código según el Convenio de Basilea (Llenar de acuerdo al código de clasificación marcado)
+4020
+1708.90
+195
+60
+24
+A-4
+Explosivos
+Líquidos inflamables
+Sólidos inflamables
+Sustancias o desechos susceptibles de combustión
+espontánea
+Información adicional del residuo, de considerarlo:
+Características de peligrosidad (Anexo IV del Reglamento de la LGIRS)
+Oxidantes
+Sustancias o desechos que, en contacto con el agua,
+emiten gases inflamables
+3. MANEJO DEL RESIDUO PELIGROSO
+3.1. EO-RS DE RECOLECCIÓN Y TRANSPORTE
+Razón social
+Peróxidos orgánicos
+Tóxicos (venenosos) agudos
+Sustancias infecciosas
+Corrosivos
+INVERSIONES Y MULTISERVICIOS AVKA S.A.C.
+Registro EO RS
+EO-RS-00045-2025-MINAM/VMGA/DGGRS
+Liberación de gases tóxicos en contacto con el aire
+o el agua
+Sustancias tóxicas (con efectos retardados o
+crónicos)
+Eco tóxicos
+Sustancias que pueden, por algún medio, después de
+su eliminación, dar origen a otra sustancia.
+Otros(especificar)
+N° RUC
+Autorización o licencia de funcionamiento municipal
+N° 057-2024-MDC
+20609186748
+Documento que autoriza la ruta
+N° 3089-2025-MTC/17.02
+Dirección
+Distrito
+Correo electrónico
+Representante legal
+Responsable técnico
+Carmen Alto
+Provincia
+JR. BUENA VISTA - YANAMA
+Huamanga
+avkasac@gmail.com/inmuavka@hotmail.com
+RONALD JHONATAN PALOMINO HUAMANI
+EDU ELIHUD HUAMANI PALOMINO
+Departamento
+Teléfono
+DNI/CE
+N° de colegiatura
+Ayacucho
+916109424
+71244519
+334089
