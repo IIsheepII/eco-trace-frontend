@@ -213,3 +213,23 @@ export type Report = {
   durationMs?: number | null;
   createdAt: string;
 };
+
+export type EvaluationMoment = 'PRETEST' | 'POSTTEST';
+export type EvaluationActivity = 'REGISTRATION' | 'SEARCH' | 'TRANSCRIPTION' | 'OCR_EXTRACTION' | 'REPORT_GENERATION';
+export type EvaluationRecordStatus = 'COMPLETE' | 'INCOMPLETE' | 'UNAVAILABLE';
+
+export type EvaluationMeasurementInput = {
+  measurementCode: string; manifestCode?: string; measuredAt: string; measurerCode: string;
+  moment: EvaluationMoment; activity: EvaluationActivity; status: EvaluationRecordStatus;
+  observation?: string; startedAt?: string; finishedAt?: string; searchedData?: string;
+  resultFound?: boolean; totalFields?: number; fieldsWithError?: number; omittedFields?: number;
+  correctedFields?: number; finalErrors?: number; correctWithoutCorrection?: number;
+  errorTypes?: string[]; qualityTags?: string[]; reportType?: string; reportScope?: string;
+};
+
+export type EvaluationMeasurement = EvaluationMeasurementInput & { id: string; durationMinutes?: string | number | null; createdAt: string; updatedAt: string };
+export type EvaluationSummary = {
+  objective: string; activity: EvaluationActivity; n: number; validPairs: number; meanPre: number | null; meanPost: number | null;
+  meanDifference: number | null; improvementPercent: number | null; minimum: number | null; maximum: number | null;
+  standardDeviation: number | null; complete: boolean; suggestedTest: string; reason: string;
+};

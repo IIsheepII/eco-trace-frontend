@@ -44,9 +44,9 @@ const manifestSections = [
       'destination_codigo_registro_eo_rs',
       'destination_address',
       'destination_responsable_tecnico',
-      'destination_responsable_name',
-      'destination_responsable_dni_ce',
-      'destination_fecha_hora',
+      'destination_refrendo_responsable',
+      'destination_refrendo_dni_ce',
+      'destination_refrendo_date',
     ],
   },
 ];

@@ -1,6 +1,7 @@
 import {
   Add,
   Analytics,
+  Assignment,
   Article,
   CorporateFare,
   Dashboard,
@@ -44,6 +45,7 @@ const navItems: { label: string; path: string; icon: ReactElement; permissions?:
   { label: 'Documentos', path: '/documents', icon: <Description /> },
   { label: 'Subir documento', path: '/documents/upload', icon: <Article />, permissions: ['documents:manage'] },
   { label: 'Reportes', path: '/reports', icon: <Analytics />, permissions: ['reports:read'] },
+  { label: 'Evaluación O1/O2', path: '/evaluation', icon: <Assignment />, permissions: ['reports:read'] },
   { label: 'Historial de procesamiento', path: '/processing-history', icon: <History />, permissions: ['documents:manage'] },
   { label: 'Organizaciones', path: '/organisations', icon: <CorporateFare />, permissions: ['organisations:manage'] },
   { label: 'Usuarios y roles', path: '/users', icon: <Group />, permissions: ['users:manage'] },

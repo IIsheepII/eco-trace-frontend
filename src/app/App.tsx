@@ -12,6 +12,7 @@ import { ProcessingStatusPage } from '../features/documents/ProcessingStatusPage
 import { UploadDocumentPage } from '../features/documents/UploadDocumentPage';
 import { ValidateDocumentPage } from '../features/documents/ValidateDocumentPage';
 import { ReportsPage } from '../features/reports/ReportsPage';
+import { EvaluationPage } from '../features/evaluations/EvaluationPage';
 import { SettingsPage } from '../features/settings/SettingsPage';
 import { AppLayout } from '../layouts/AppLayout';
 
@@ -36,6 +37,7 @@ export function App() {
             <Route path="processing-history" element={<ProcessingHistoryPage />} />
             <Route element={<ProtectedRoute permissions={['reports:read']} />}>
               <Route path="reports" element={<ReportsPage />} />
+              <Route path="evaluation" element={<EvaluationPage />} />
             </Route>
             <Route element={<ProtectedRoute permissions={['settings:manage']} />}>
               <Route path="audit-log" element={<AuditLogPage />} />
