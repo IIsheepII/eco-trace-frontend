@@ -16,6 +16,8 @@ export type DocumentFilters = {
   documentTypeId?: string;
   fieldName?: string;
   fieldValue?: string;
+  trackEvaluation?: 'true';
+  evaluationStartedAt?: string;
 };
 
 function toNumber(value: string | number | undefined): number {
@@ -102,7 +104,15 @@ export const documentService = {
       method: 'POST',
     }),
   getFileBlob: async (documentId: string) => {
-    const response = await httpClient.get<Blob>(`/documents/${documentId}/file`, { responseType: 'blob' });
+    const response = await httpClient.get<Blob>(`/documents/${documentId}/file`, {
+      responseType: 'blob',
+      params: { preview: Date.now() },
+      headers: {
+        Accept: 'application/pdf,image/*',
+        'Cache-Control': 'no-cache',
+        Pragma: 'no-cache',
+      },
+    });
     return response.data;
   },
   getOcrResult: (documentId: string) => apiRequest<OcrResult>(`/documents/${documentId}/ocr-result`),

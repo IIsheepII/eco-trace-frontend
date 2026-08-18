@@ -3,6 +3,7 @@ import { CloudUpload } from '@mui/icons-material';
 import { Alert, Box, Button, Card, CardContent, LinearProgress, MenuItem, Stack, Step, StepLabel, Stepper, TextField, Typography } from '@mui/material';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { useForm } from 'react-hook-form';
+import { useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { uploadDocumentSchema, type UploadDocumentFormValues } from '../../schemas/documents';
 import { adminService } from '../../services/adminService';
@@ -11,6 +12,7 @@ import { ErrorState, LoadingState } from '../../components/StateView';
 import { ApiError } from '../../services/apiClient';
 
 export function UploadDocumentPage() {
+  const registrationStartedAt = useRef(new Date().toISOString());
   const navigate = useNavigate();
   const queryClient = useQueryClient();
   const {
@@ -40,6 +42,7 @@ export function UploadDocumentPage() {
     formData.set('title', values.title);
     formData.set('documentTypeId', values.documentTypeId);
     formData.set('file', values.file[0]);
+    formData.set('registrationStartedAt', registrationStartedAt.current);
     const uploaded = await uploadMutation.mutateAsync(formData);
     const processed = await processingMutation.mutateAsync(uploaded.id);
     queryClient.setQueryData(['documents', uploaded.id], processed);

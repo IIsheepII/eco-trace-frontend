@@ -24,6 +24,44 @@ export const httpClient = axios.create({
   },
 });
 
+type RetryableRequestConfig = AxiosRequestConfig & {
+  _retryAfterRefresh?: boolean;
+};
+
+let refreshRequest: Promise<void> | null = null;
+
+function refreshSession() {
+  if (!refreshRequest) {
+    refreshRequest = axios
+      .post(`${API_BASE_URL}/auth/refresh`, undefined, { withCredentials: true })
+      .then(() => undefined)
+      .finally(() => {
+        refreshRequest = null;
+      });
+  }
+  return refreshRequest;
+}
+
+httpClient.interceptors.response.use(
+  (response) => response,
+  async (error: unknown) => {
+    if (!(error instanceof AxiosError) || error.response?.status !== 401 || !error.config) {
+      return Promise.reject(error);
+    }
+
+    const config = error.config as RetryableRequestConfig;
+    const requestUrl = String(config.url ?? '');
+    const isAuthRequest = ['/auth/login', '/auth/refresh', '/auth/logout'].some((path) => requestUrl.includes(path));
+    if (config._retryAfterRefresh || isAuthRequest) {
+      return Promise.reject(error);
+    }
+
+    config._retryAfterRefresh = true;
+    await refreshSession();
+    return httpClient.request(config);
+  },
+);
+
 export async function apiRequest<T>(path: string, options: RequestOptions = {}): Promise<T> {
   const { formData, body, headers, ...init } = options;
 

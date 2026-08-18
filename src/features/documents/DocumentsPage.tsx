@@ -11,6 +11,7 @@ import { documentService, type DocumentFilters } from '../../services/documentSe
 import type { BackendDocumentStatus, DocumentRecord } from '../../types/domain';
 
 export function DocumentsPage() {
+  const [draftFilters, setDraftFilters] = useState<DocumentFilters>({});
   const [filters, setFilters] = useState<DocumentFilters>({});
   const [statusFilter, setStatusFilter] = useState<BackendDocumentStatus | ''>('');
   const { user } = useAuth();
@@ -35,7 +36,8 @@ export function DocumentsPage() {
         <TextField
           label="Buscar documentos"
           InputProps={{ startAdornment: <Search fontSize="small" /> }}
-          onChange={(event) => setFilters((current) => ({ ...current, q: event.target.value }))}
+          value={draftFilters.q ?? ''}
+          onChange={(event) => setDraftFilters((current) => ({ ...current, q: event.target.value }))}
         />
         <TextField select label="Estado" defaultValue="" sx={{ minWidth: 220 }} onChange={(event) => setStatusFilter(event.target.value as BackendDocumentStatus | '')}>
           <MenuItem value="">Todos los estados</MenuItem>
@@ -45,6 +47,13 @@ export function DocumentsPage() {
           <MenuItem value="VALIDATED">Validado</MenuItem>
           <MenuItem value="REJECTED">Rechazado</MenuItem>
         </TextField>
+        <Button
+          variant="contained"
+          startIcon={<Search />}
+          onClick={() => setFilters({ ...draftFilters, trackEvaluation: 'true', evaluationStartedAt: new Date().toISOString() })}
+        >
+          Buscar
+        </Button>
       </Stack>
       {documentsQuery.isLoading && <LoadingState label="Cargando documentos" />}
       {documentsQuery.isError && <ErrorState message="No se pudieron cargar los documentos" onRetry={() => documentsQuery.refetch()} />}
